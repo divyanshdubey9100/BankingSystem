@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+	<form action="/findByAccno" method="post">
+		<h3>Find By Account Number</h3>
+		<input type="number" min="1" maxlength="10" placeholder="Enter AccNO.." name="accno">
+		<input type="submit">
+	</form><br><br>
+	<form action="/findByName" method="post">
+		<h3>Find By Customer Name</h3>
+		<input type="text" placeholder="Enter Customer Name.." name="name">
+		<input type="submit">
+	</form>
+	<form action="/findByMobile" method="post">
+		<h3>Find By Customer Mobile</h3>
+		<input type="tel" min="10" maxlength="10" placeholder="Enter Customer Mobile.." name="mobile">
+		<input type="submit">
+	</form>
+	<form action="/showAllCustomers" method="post">
+		<h3>Show All Enrolled Customers</h3>
+		<input type="submit" value="Show All">
+	</form>
+	<br><br>
+	<a href="/customer">Home</a>
+</body>
+</html>
