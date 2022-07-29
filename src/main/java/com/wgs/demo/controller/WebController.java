@@ -18,9 +18,9 @@ public class WebController {
 	@Autowired
 	CustRepo custRepo;
 	private static int accno = 1000;
-	@RequestMapping("customer")
+	@RequestMapping("admin")
 	public String customerUi() {
-		return "views/customer";
+		return "views/Admin";
 	}
 	@RequestMapping("openAccount")
 	public String openAccount() {
@@ -70,7 +70,6 @@ public class WebController {
 
 	@RequestMapping("findByAccno")
 	public String detailsBasedOnAccNO(Model model, Customer customer) {
-//		Customer customer1=custRepo.findById(accno).orElse(new Customer());
 		System.out.println(custRepo.findById(customer.getAccno()));
 		model.addAttribute("cust", custRepo.findById(customer.getAccno()));
 		return "views/customerAccountDetails";
@@ -159,8 +158,8 @@ public class WebController {
 		custRepo.deleteById(customer.getAccno());
 		return "views/customerAccountDetails";
 	}
-	@RequestMapping("admin")
+	@RequestMapping("customer")
 	public String adminUi() {
-		return "views/admin";
+		return "views/customer";
 	}
 }

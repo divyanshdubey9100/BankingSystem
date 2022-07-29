@@ -3,9 +3,10 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
+<!-- <script src="jquery.js"></script> -->
 </head>
 <body>
-	<h1>Welcome To Customer Page Of WGS Bank</h1>
+	<h1>Welcome To Admin Panel Of WGS Bank</h1>
 	<a href="/openAccount">open Account</a>
 	<br>
 	<br>
@@ -15,12 +16,12 @@
 	<a href="/banking">Banking Operations</a>
 	<br>
 	<br>
-	<form action="logout()">
-		<input type="submit" value="Logout">
-	</form>
+	
+	<button onclick="logout()">Logout</button>
 <script type="text/javascript">
+
 	function logout(){
-		alert("logged out successfull");
+		window.open("/","_parent");
 	}
 
 </script>
