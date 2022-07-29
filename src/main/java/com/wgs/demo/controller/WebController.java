@@ -165,9 +165,25 @@ public class WebController {
 	}
 	@RequestMapping("editAccountDetails")
 	public String editAccountDetails(Customer customer,Model model) {
-		String mes = "Work in Prpgress";
+		String mes = "Work in Progress";
 		System.out.println(mes);
 		model.addAttribute("cust", mes);
-		return "views/customerAccountDetails";
+		return "views/customerDetails";
+	}
+	
+	@RequestMapping("checkBalanceByCust")
+	public String checkBalanceByCust(Customer customer,Model model) {
+		String mes = "Work in Progress";
+		System.out.println(mes);
+		model.addAttribute("cust", mes);
+		return "views/customerDetails";
+	}
+	
+	@RequestMapping("checkAccountStatement")
+	public String checkAccountStatement(Customer customer,Model model) {
+		String mes = "Work in Progress";
+		System.out.println(mes);
+		model.addAttribute("cust", mes);
+		return "views/customerDetails";
 	}
 }
