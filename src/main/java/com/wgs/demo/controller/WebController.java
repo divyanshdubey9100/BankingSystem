@@ -1,28 +1,27 @@
 package com.wgs.demo.controller;
 
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.wgs.demo.cust.Customer;
 import com.wgs.demo.repo.CustRepo;
+import com.wgs.impl.MethodImpl;
 
 @Controller
 public class WebController {
-//	Set<Customer> custList=new HashSet<Customer>();
 	@Autowired
 	CustRepo custRepo;
-	private static int accno = 1000;
+	@Autowired
+	MethodImpl impl;
 	@RequestMapping("admin")
 	public String customerUi() {
 		return "views/Admin";
 	}
+
 	@RequestMapping("openAccount")
 	public String openAccount() {
 		return "views/openAccount";
@@ -30,39 +29,28 @@ public class WebController {
 
 	@RequestMapping("customerAccountDetails")
 	public String customerAccountDetails(Customer customer, Model model) {
-
-		Optional<Customer> cust = custRepo.findById(accno);
+		int accno = 1000 + impl.getTokenId();
+		System.out.println("Before increment accno "+accno);
 		try {
-			if (cust.isPresent()) {
-				System.out.println(accno + " is present");
-				System.out.println(cust.get());
-				model.addAttribute("cust", cust.get());
-			} else {
-				if (customer.getBalance() >= 1000) {
-					int accno=1000+getTokenId();
-					customer.setAccno(++accno);
+			for (int i = 0; i <= impl.getTokenId(); i++) {
+				accno++;
+				System.out.println("After increment accno "+accno);
+				if (customer.getBalance() >= 1000 && impl.isAccExists(accno) == false) {
+					customer.setAccno(accno);
 					custRepo.save(customer);
 					System.out.println(customer);
-					model.addAttribute("cust", customer);
-				} else {
-					String msg = "Minimum Balance To Open New A/c Is 1000";
-					System.out.println(msg);
-					model.addAttribute("cust", msg);
+					model.addAttribute("cust", "Account Created Successfully.." + customer);
+					break;
+				} else if (impl.isAccExists(accno) == true) {
+					System.out.println("true");
+					continue;
+					}
 				}
-			}
-			
-
-		} catch (NoSuchElementException e) {
+		} catch (Exception e) {
 			System.out.println(e + " err hai err");
 		}
 		return "views/customerAccountDetails";
 	}
-	public int getTokenId() {
-		List<Customer> accList=custRepo.findAll();
-		int token=accList.size();
-		return token;
-	}
-
 	@RequestMapping("findCustomerDetails")
 	public String findCustomerDetails() {
 		System.out.println("Searching ....");
@@ -113,6 +101,8 @@ public class WebController {
 	public String withdraw(Customer customer, Model model) {
 		System.out.println("accno :" + customer.getAccno() + " Withdraw Amount :" + customer.getBalance());
 		Optional<Customer> cust = custRepo.findById(customer.getAccno());
+		System.out.println(customer.getAccno() + " cusomer.getAccNO()");
+		System.out.println(cust.get().getAccno());
 		if (customer.getBalance() >= 1000 && customer.getBalance() < cust.get().getBalance()) {
 			int newAmount = cust.get().getBalance() - customer.getBalance();
 			cust.get().setBalance(newAmount);
@@ -159,28 +149,30 @@ public class WebController {
 		custRepo.deleteById(customer.getAccno());
 		return "views/customerAccountDetails";
 	}
+
 	@RequestMapping("customer")
 	public String adminUi() {
 		return "views/customer";
 	}
+
 	@RequestMapping("editAccountDetails")
-	public String editAccountDetails(Customer customer,Model model) {
+	public String editAccountDetails(Customer customer, Model model) {
 		String mes = "Work in Progress";
 		System.out.println(mes);
 		model.addAttribute("cust", mes);
 		return "views/customerDetails";
 	}
-	
+
 	@RequestMapping("checkBalanceByCust")
-	public String checkBalanceByCust(Customer customer,Model model) {
+	public String checkBalanceByCust(Customer customer, Model model) {
 		String mes = "Work in Progress";
 		System.out.println(mes);
 		model.addAttribute("cust", mes);
 		return "views/customerDetails";
 	}
-	
+
 	@RequestMapping("checkAccountStatement")
-	public String checkAccountStatement(Customer customer,Model model) {
+	public String checkAccountStatement(Customer customer, Model model) {
 		String mes = "Work in Progress";
 		System.out.println(mes);
 		model.addAttribute("cust", mes);
