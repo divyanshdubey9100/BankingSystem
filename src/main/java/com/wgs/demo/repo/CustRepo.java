@@ -8,6 +8,7 @@ import com.wgs.demo.cust.Customer;
 
 public interface CustRepo extends JpaRepository<Customer, Integer>{
 	
+	List<Customer> findByAccno(int accno);
 	List<Customer> findByName(String name);
 	List<Customer> findByMobile(String mobile);
 }

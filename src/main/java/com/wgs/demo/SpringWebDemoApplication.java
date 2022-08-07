@@ -1,4 +1,4 @@
-package com.wgs.demo.app;
+package com.wgs.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
