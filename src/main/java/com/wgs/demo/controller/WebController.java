@@ -8,8 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.wgs.demo.cust.Customer;
+import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.repo.CustRepo;
-import com.wgs.impl.MethodImpl;
 
 @Controller
 public class WebController {
