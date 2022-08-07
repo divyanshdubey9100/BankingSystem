@@ -13,9 +13,7 @@ import com.wgs.demo.repo.CustRepo;
 public class WebController {
 	@Autowired
 	CustRepo custRepo;
-
 	MethodImpl impl;
-
 	@RequestMapping("admin")
 	public String customerUi() {
 		return "views/Admin";
