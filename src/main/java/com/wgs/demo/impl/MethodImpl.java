@@ -21,4 +21,15 @@ public class MethodImpl {
 	public int getTokenId() {
 			return (int) custRepo.count();
 	}
+	public boolean isMobileExists(String mobile) {
+		 boolean mob = custRepo.existsByMobile(mobile);
+		 if(mob==true) {
+			 return true;
+		 }else {
+			 return false;
+		 }
+		
+		
+	}
+	
 }

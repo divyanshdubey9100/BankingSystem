@@ -16,32 +16,37 @@ public class WebController {
 	@Autowired
 	MethodImpl impl;
 	@RequestMapping("admin")
-	public String customerUi() {
+	private String customerUi() {
 		return "views/Admin";
 	}
 
 	@RequestMapping("openAccount")
-	public String openAccount() {
+	private String openAccount() {
 		return "views/openAccount";
 	}
 
 	@RequestMapping("customerAccountDetails")
-	public String customerAccountDetails(Customer customer, Model model) {
+	private String customerAccountDetails(Customer customer, Model model) {
 		int accno = 1000 + impl.getTokenId();
-		System.out.println("Before increment accno " + accno);
 		try {
 			for (int i = 0; i <= impl.getTokenId(); i++) {
 				accno++;
-				System.out.println("After increment accno " + accno);
-				if (customer.getBalance() >= 1000 && impl.isAccExists(accno) == false) {
+				if (customer.getBalance() >= 1000 && impl.isAccExists(accno) == false  && impl.isMobileExists(customer.getMobile())==false) {
 					customer.setAccno(accno);
 					custRepo.save(customer);
 					System.out.println(customer);
 					model.addAttribute("cust", "Account Created Successfully.." + customer);
 					break;
 				} else if (impl.isAccExists(accno) == true) {
-					System.out.println("true");
+					String mes=accno+" already exists! plz Wait...";
+					System.out.println(mes);
+					model.addAttribute("cust", mes);
 					continue;
+				}else if(impl.isMobileExists(customer.getMobile())==true) {
+					String mes= "Try with new Mobile No.. "+customer.getMobile()+" already exists!";
+					System.out.println(mes);
+					model.addAttribute("cust", mes);
+					break;
 				}
 			}
 		} catch (Exception e) {
@@ -51,13 +56,13 @@ public class WebController {
 	}
 
 	@RequestMapping("findCustomerDetails")
-	public String findCustomerDetails() {
+	private String findCustomerDetails() {
 		System.out.println("Searching ....");
 		return "views/findCustomerDetails";
 	}
 
 	@RequestMapping("findByAccno")
-	public String detailsBasedOnAccNO(Model model, Customer customer) {
+	private String detailsBasedOnAccNO(Model model, Customer customer) {
 		List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 		System.out.println(custList);
 		model.addAttribute("cust", custList);
@@ -65,7 +70,7 @@ public class WebController {
 	}
 
 	@RequestMapping("showAllCustomers")
-	public String showAllCustomers(Model model) {
+	private String showAllCustomers(Model model) {
 		List<Customer> custList = custRepo.findAll();
 		System.out.println(custList);
 		model.addAttribute("cust", custList);
@@ -73,7 +78,7 @@ public class WebController {
 	}
 
 	@RequestMapping("findByName")
-	public String findByName(Model model, Customer customer) {
+	private String findByName(Model model, Customer customer) {
 		List<Customer> custList = custRepo.findByName(customer.getName());
 		System.out.println(custList);
 		model.addAttribute("cust", custList);
@@ -81,7 +86,7 @@ public class WebController {
 	}
 
 	@RequestMapping("findByMobile")
-	public String findByMobile(Customer customer, Model model) {
+	private String findByMobile(Customer customer, Model model) {
 		List<Customer> custList = custRepo.findByMobile(customer.getMobile());
 		System.out.println(custList);
 		model.addAttribute("cust", custList);
@@ -89,12 +94,12 @@ public class WebController {
 	}
 
 	@RequestMapping("banking")
-	public String banking() {
+	private String banking() {
 		return "views/banking";
 	}
 
 	@RequestMapping("deposit")
-	public String deposit(Customer customer, Model model) {
+	private String deposit(Customer customer, Model model) {
 		System.out.println("accno :" + customer.getAccno() + " Deposit Amount :" + customer.getBalance());
 		List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 		for (Customer cust : custList) {
@@ -110,7 +115,7 @@ public class WebController {
 	}
 
 	@RequestMapping("withdraw")
-	public String withdraw(Customer customer, Model model) {
+	private String withdraw(Customer customer, Model model) {
 		System.out.println("accno :" + customer.getAccno() + " Withdraw Amount :" + customer.getBalance());
 		List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 		for (Customer cust : custList) {
@@ -137,7 +142,7 @@ public class WebController {
 	}
 
 	@RequestMapping("checkBalance")
-	public String checkBalance(Customer customer, Model model) {
+	private String checkBalance(Customer customer, Model model) {
 		List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 		for (Customer cust : custList) {
 			String bal = "Hello " + cust.getName() + " your a/c : " + cust.getAccno() + " balance : "
@@ -150,7 +155,7 @@ public class WebController {
 	}
 
 	@RequestMapping("deleteByAccno")
-	public String deleteByAccno(Customer customer, Model model) {
+	private String deleteByAccno(Customer customer, Model model) {
 		List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 		for (Customer cust : custList) {
 			String mes = "Hello " + cust.getName() + " your a/c " + cust.getAccno() + " balance is:" + cust.getBalance()
@@ -163,12 +168,12 @@ public class WebController {
 	}
 
 	@RequestMapping("customer")
-	public String adminUi() {
+	private String adminUi() {
 		return "views/customer";
 	}
 
 	@RequestMapping("editAccountDetails")
-	public String editAccountDetails(Customer customer, Model model) {
+	private String editAccountDetails(Customer customer, Model model) {
 		String mes = "Work in Progress";
 		System.out.println(mes);
 		model.addAttribute("cust", mes);
@@ -176,7 +181,7 @@ public class WebController {
 	}
 
 	@RequestMapping("checkBalanceByCust")
-	public String checkBalanceByCust(Customer customer, Model model) {
+	private String checkBalanceByCust(Customer customer, Model model) {
 		String mes = "Work in Progress";
 		System.out.println(mes);
 		model.addAttribute("cust", mes);
@@ -184,7 +189,7 @@ public class WebController {
 	}
 
 	@RequestMapping("checkAccountStatement")
-	public String checkAccountStatement(Customer customer, Model model) {
+	private String checkAccountStatement(Customer customer, Model model) {
 		String mes = "Work in Progress";
 		System.out.println(mes);
 		model.addAttribute("cust", mes);

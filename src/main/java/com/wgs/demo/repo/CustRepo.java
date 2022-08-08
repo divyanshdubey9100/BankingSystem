@@ -11,4 +11,5 @@ public interface CustRepo extends JpaRepository<Customer, Integer>{
 	List<Customer> findByAccno(int accno);
 	List<Customer> findByName(String name);
 	List<Customer> findByMobile(String mobile);
+	boolean existsByMobile(String mobile);
 }
