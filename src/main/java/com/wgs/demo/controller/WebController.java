@@ -15,6 +15,7 @@ public class WebController {
 	CustRepo custRepo;
 	@Autowired
 	MethodImpl impl;
+
 	@RequestMapping("admin")
 	private String customerUi() {
 		return "views/Admin";
@@ -31,19 +32,20 @@ public class WebController {
 		try {
 			for (int i = 0; i <= impl.getTokenId(); i++) {
 				accno++;
-				if (customer.getBalance() >= 1000 && impl.isAccExists(accno) == false  && impl.isMobileExists(customer.getMobile())==false) {
+				if (customer.getBalance() >= 1000 && impl.isAccExists(accno) == false
+						&& impl.isMobileExists(customer.getMobile()) == false) {
 					customer.setAccno(accno);
 					custRepo.save(customer);
 					System.out.println(customer);
 					model.addAttribute("cust", "Account Created Successfully.." + customer);
 					break;
 				} else if (impl.isAccExists(accno) == true) {
-					String mes=accno+" already exists! plz Wait...";
+					String mes = accno + " already exists! plz Wait...";
 					System.out.println(mes);
 					model.addAttribute("cust", mes);
 					continue;
-				}else if(impl.isMobileExists(customer.getMobile())==true) {
-					String mes= "Try with new Mobile No.. "+customer.getMobile()+" already exists!";
+				} else if (impl.isMobileExists(customer.getMobile()) == true) {
+					String mes = "Try with new Mobile No.. " + customer.getMobile() + " already exists!";
 					System.out.println(mes);
 					model.addAttribute("cust", mes);
 					break;
