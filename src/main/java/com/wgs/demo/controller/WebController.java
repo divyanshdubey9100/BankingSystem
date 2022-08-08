@@ -13,6 +13,7 @@ import com.wgs.demo.repo.CustRepo;
 public class WebController {
 	@Autowired
 	CustRepo custRepo;
+	@Autowired
 	MethodImpl impl;
 	@RequestMapping("admin")
 	public String customerUi() {

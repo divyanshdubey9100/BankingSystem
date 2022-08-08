@@ -1,24 +1,24 @@
 package com.wgs.demo.impl;
 
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.wgs.demo.cust.Customer;
 import com.wgs.demo.repo.CustRepo;
-
+@Component
 public class MethodImpl {
+	@Autowired
 	CustRepo custRepo;
+
 	public boolean isAccExists(int accno) {
-		boolean acc = custRepo.existsById(accno);
-		if (acc == true) {
-			return true;
-		} else {
-			return false;
-		}
+		 boolean acc = custRepo.existsById(accno);
+			if (acc == true) {
+				return true;
+			} else {
+				return false;
+			}
 	}
 
 	public int getTokenId() {
-		List<Customer> accList = custRepo.findAll();
-		int token = accList.size();
-		return token;
+			return (int) custRepo.count();
 	}
 }
