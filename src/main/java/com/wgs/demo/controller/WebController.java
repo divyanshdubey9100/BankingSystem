@@ -46,7 +46,6 @@ public class WebController {
 					continue;
 				} else if (impl.isMobileExists(customer.getMobile()) == true) {
 					String mes = "Try with new Mobile No.. " + customer.getMobile() + " already exists!";
-					System.out.println(mes);
 					model.addAttribute("cust", mes);
 					break;
 				}
@@ -59,14 +58,12 @@ public class WebController {
 
 	@RequestMapping("findCustomerDetails")
 	private String findCustomerDetails() {
-		System.out.println("Searching ....");
 		return "views/findCustomerDetails";
 	}
 
 	@RequestMapping("findByAccno")
 	private String detailsBasedOnAccNO(Model model, Customer customer) {
 		List<Customer> custList = custRepo.findByAccno(customer.getAccno());
-		System.out.println(custList);
 		model.addAttribute("cust", custList);
 		return "views/customerList";
 	}
@@ -74,7 +71,6 @@ public class WebController {
 	@RequestMapping("showAllCustomers")
 	private String showAllCustomers(Model model) {
 		List<Customer> custList = custRepo.findAll();
-		System.out.println(custList);
 		model.addAttribute("cust", custList);
 		return "views/customerList";
 	}
@@ -82,7 +78,6 @@ public class WebController {
 	@RequestMapping("findByName")
 	private String findByName(Model model, Customer customer) {
 		List<Customer> custList = custRepo.findByName(customer.getName());
-		System.out.println(custList);
 		model.addAttribute("cust", custList);
 		return "views/customerList";
 	}
@@ -90,7 +85,6 @@ public class WebController {
 	@RequestMapping("findByMobile")
 	private String findByMobile(Customer customer, Model model) {
 		List<Customer> custList = custRepo.findByMobile(customer.getMobile());
-		System.out.println(custList);
 		model.addAttribute("cust", custList);
 		return "views/customerList";
 	}
@@ -102,43 +96,48 @@ public class WebController {
 
 	@RequestMapping("deposit")
 	private String deposit(Customer customer, Model model) {
-		System.out.println("accno :" + customer.getAccno() + " Deposit Amount :" + customer.getBalance());
-		List<Customer> custList = custRepo.findByAccno(customer.getAccno());
-		for (Customer cust : custList) {
-			int newAmount = cust.getBalance() + customer.getBalance();
-			cust.setBalance(newAmount);
-			String msg = "Hi " + cust.getName() + " " + customer.getBalance() + " is Successfully Deposited in A/c : "
-					+ cust.getAccno() + " Updated Balance is " + cust.getBalance();
-			System.out.println(msg);
+		if (impl.isAccExists(customer.getAccno()) == true) {
+			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
+			for (Customer cust : custList) {
+				if (impl.isAccExists(customer.getAccno()) == true) {
+					int newAmount = cust.getBalance() + customer.getBalance();
+					cust.setBalance(newAmount);
+					String msg = "Hi " + cust.getName() + " " + customer.getBalance()
+							+ " is Successfully Deposited in A/c : " + cust.getAccno() + " Updated Balance is "
+							+ cust.getBalance();
+					model.addAttribute("cust", msg);
+					custRepo.flush();
+				}
+			}
+		} else {
+			String msg = "Hii :" + customer.getAccno() + " Invalid A/c no.";
 			model.addAttribute("cust", msg);
-			custRepo.flush();
 		}
 		return "views/customerAccountDetails";
 	}
 
 	@RequestMapping("withdraw")
 	private String withdraw(Customer customer, Model model) {
-		System.out.println("accno :" + customer.getAccno() + " Withdraw Amount :" + customer.getBalance());
-		List<Customer> custList = custRepo.findByAccno(customer.getAccno());
-		for (Customer cust : custList) {
-			System.out.println(customer.getAccno() + " cusomer.getAccNO()");
-			System.out.println(cust.getAccno());
-			if (customer.getBalance() >= 1000 && customer.getBalance() < cust.getBalance()) {
-				int newAmount = cust.getBalance() - customer.getBalance();
-				cust.setBalance(newAmount);
-				String msg = "Hi : " + cust.getName() + " : " + customer.getBalance()
-						+ " is Successfully Withdrawn in a/c : " + cust.getAccno() + " Updated Balance is : "
-						+ cust.getBalance();
-				System.out.println(msg);
-				model.addAttribute("cust", msg);
-				custRepo.flush();
-
-			} else {
-				String msg = "Hi : " + cust.getName() + " your a/c : " + cust.getAccno()
-						+ " has Low A/c Balance To Withraw";
-				System.out.println(msg);
-				model.addAttribute("cust", msg);
+		if (impl.isAccExists(customer.getAccno()) == true) {
+			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
+			for (Customer cust : custList) {
+				if ((cust.getBalance() - customer.getBalance()) > 1000 && cust.getBalance() > customer.getBalance()) {
+					int newAmount = cust.getBalance() - customer.getBalance();
+					cust.setBalance(newAmount);
+					String msg = "Hi : " + cust.getName() + " : " + customer.getBalance()
+							+ " is Successfully Withdrawn in a/c : " + cust.getAccno() + " Updated Balance is : "
+							+ cust.getBalance();
+					model.addAttribute("cust", msg);
+					custRepo.flush();
+				} else {
+					String msg = "Hi : " + cust.getName() + " your a/c : " + cust.getAccno()
+							+ " has Low A/c Balance To Withraw";
+					model.addAttribute("cust", msg);
+				}
 			}
+		} else {
+			String msg = "Hii :" + customer.getAccno() + " Invalid A/c no.";
+			model.addAttribute("cust", msg);
 		}
 		return "views/customerAccountDetails";
 	}
