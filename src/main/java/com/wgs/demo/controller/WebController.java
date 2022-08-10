@@ -61,32 +61,56 @@ public class WebController {
 		return "views/findCustomerDetails";
 	}
 
-	@RequestMapping("findByAccno")
-	private String detailsBasedOnAccNO(Model model, Customer customer) {
-		List<Customer> custList = custRepo.findByAccno(customer.getAccno());
-		model.addAttribute("cust", custList);
-		return "views/customerList";
-	}
-
 	@RequestMapping("showAllCustomers")
 	private String showAllCustomers(Model model) {
-		List<Customer> custList = custRepo.findAll();
-		model.addAttribute("cust", custList);
-		return "views/customerList";
+		if (impl.getTokenId() != 0) {
+			List<Customer> custList = custRepo.findAll();
+			model.addAttribute("cust", custList);
+			return "views/customerList";
+		} else {
+			String msg = "Hii : Empty Response";
+			model.addAttribute("cust", msg);
+		}
+		return "views/customerAccountDetails";
+	}
+
+	@RequestMapping("findByAccno")
+	private String detailsBasedOnAccNO(Model model, Customer customer) {
+		if (impl.isAccExists(customer.getAccno()) == true) {
+			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
+			model.addAttribute("cust", custList);
+			return "views/customerList";
+		} else {
+			String msg = "Hii : Invalid A/c no.";
+			model.addAttribute("cust", msg);
+		}
+		return "views/customerAccountDetails";
 	}
 
 	@RequestMapping("findByName")
 	private String findByName(Model model, Customer customer) {
-		List<Customer> custList = custRepo.findByName(customer.getName());
-		model.addAttribute("cust", custList);
-		return "views/customerList";
+		if (impl.isPersonExists(customer.getName()) == true) {
+			List<Customer> custList = custRepo.findByName(customer.getName());
+			model.addAttribute("cust", custList);
+			return "views/customerList";
+		} else {
+			String msg = "Hii : No Person Exists!.";
+			model.addAttribute("cust", msg);
+		}
+		return "views/customerAccountDetails";
 	}
 
 	@RequestMapping("findByMobile")
 	private String findByMobile(Customer customer, Model model) {
-		List<Customer> custList = custRepo.findByMobile(customer.getMobile());
-		model.addAttribute("cust", custList);
-		return "views/customerList";
+		if (impl.isMobileExists(customer.getMobile()) == true) {
+			List<Customer> custList = custRepo.findByMobile(customer.getMobile());
+			model.addAttribute("cust", custList);
+			return "views/customerList";
+		} else {
+			String msg = "Hii : Invalid Mobile No.";
+			model.addAttribute("cust", msg);
+		}
+		return "views/customerAccountDetails";
 	}
 
 	@RequestMapping("banking")

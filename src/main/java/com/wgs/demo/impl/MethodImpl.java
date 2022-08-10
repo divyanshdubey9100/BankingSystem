@@ -32,4 +32,13 @@ public class MethodImpl {
 		}
 	}
 
+	public boolean isPersonExists(String name) {
+		boolean n = custRepo.existsByName(name);
+		if (n == true) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }
