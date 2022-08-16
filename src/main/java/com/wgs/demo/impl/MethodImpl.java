@@ -41,4 +41,15 @@ public class MethodImpl {
 		}
 	}
 
+	public boolean isMailExists(String email) {
+		boolean mail = custRepo.existsByEmail(email);
+		if (mail == true) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	
+
 }
