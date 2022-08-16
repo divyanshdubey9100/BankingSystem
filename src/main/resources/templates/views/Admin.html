@@ -2,11 +2,13 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Admin</title>
 <!-- <script src="jquery.js"></script> -->
 </head>
 <body>
 	<h1>Welcome To Admin Panel Of WGS Bank</h1>
+	<p th:text="${name}"></p>
+	<br><br>
 	<a href="/openAccount">open Account</a>
 	<br>
 	<br>
@@ -16,9 +18,14 @@
 	<a href="/banking">Banking Operations</a>
 	<br>
 	<br>
-	
+
+	<a href="/findAdminDetail">findAdminDetail</a>
+	<br> <br>
 	<button onclick="logout()">Logout</button>
-<script type="text/javascript">
+	
+	<br>
+	<br>
+	<script type="text/javascript">
 
 	function logout(){
 		window.open("/","_parent");
