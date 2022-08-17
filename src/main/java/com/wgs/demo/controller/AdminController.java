@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.wgs.demo.classes.AdminReg;
 import com.wgs.demo.classes.Customer;
 import com.wgs.demo.impl.AdminImpl;
@@ -153,6 +154,50 @@ public class AdminController {
 			String mes = "Try with new Mobile No.. " + admin.getMobile() + " already exists!";
 			model.addAttribute("cust", mes);
 		}
+		return "views/customerAccountDetails";
+	}
+
+	@RequestMapping("help")
+	private String help() {
+		return "views/help";
+	}
+
+	@RequestMapping("forgetUidAndPass")
+	private String forgetUidAndPass() {
+		return "views/forgetAdminDetails";
+	}
+
+	@RequestMapping("resetUid")
+	private String forgetUserId(@RequestParam String mobile, String name, Model model) {
+		List<AdminReg> list = adminImpl.findMobileAndName(mobile, name);
+		if (list.size() != 0) {
+			for (AdminReg reg : list) {
+				model.addAttribute("cust", reg.getUserId());
+			}
+		} else {
+			String msg = "Hi " + name + " Mobile_no " + mobile + " No Details Found !";
+			model.addAttribute("cust", msg);
+		}
+		return "views/customerAccountDetails";
+	}
+
+	@RequestMapping("resetPass")
+	private String forgetPwd(@RequestParam String mobile, String userId, Model model, AdminReg admin) {
+		List<AdminReg> list = adminImpl.findUidAndMobile(userId, mobile);
+		if (list.size() != 0) {
+			model.addAttribute("cust", list);
+			return "views/resetPass";
+		} else {
+			String msg = "Hi " + userId + " Mobile_no " + mobile + " No Details Found !";
+			model.addAttribute("cust", msg);
+		}
+		return "views/customerAccountDetails";
+	}
+
+	@RequestMapping("updatePass")
+	private String updatePass(Model model, AdminReg admin) {
+		adminRepo.saveAndFlush(admin);
+		model.addAttribute("cust", admin.getPass());
 		return "views/customerAccountDetails";
 	}
 

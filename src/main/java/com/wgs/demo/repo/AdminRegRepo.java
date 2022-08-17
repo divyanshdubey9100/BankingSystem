@@ -8,6 +8,8 @@ import com.wgs.demo.classes.AdminReg;
 public interface AdminRegRepo extends JpaRepository<AdminReg, Integer>{
 	
 	List<AdminReg> findByUserIdAndPass(String userId,String pass);
+	List<AdminReg> findByMobileAndName(String mobile,String name);
+	List<AdminReg> findByUserIdAndMobile(String UserId,String mobile);
 	List<AdminReg> findByUserId(String userId);
 	List<AdminReg> findById(int id);
 	String findByPass(String pass);
