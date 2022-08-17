@@ -35,19 +35,29 @@ public class AdminImpl {
 		}
 	}
 
-	public List<AdminReg> findByuId(String userId){
-		List<AdminReg> list =adminRepo.findByUserId(userId);
+	public List<AdminReg> findByuId(String userId) {
+		List<AdminReg> list = adminRepo.findByUserId(userId);
 		return list;
 	}
-	
+
 	public boolean adminAuthintication(String uid, String pass) {
 		List<AdminReg> list = adminRepo.findByUserIdAndPass(uid, pass);
 		for (AdminReg reg : list) {
 			if (reg.getUserId().equals(uid) && reg.getPass().equals(pass)) {
 				return true;
-			}else
+			} else
 				return false;
 		}
 		return false;
+	}
+
+	public List<AdminReg> findMobileAndName(String mobile, String name) {
+		List<AdminReg> list = adminRepo.findByMobileAndName(mobile, name);
+		return list;
+	}
+
+	public List<AdminReg> findUidAndMobile(String uid, String mobile) {
+		List<AdminReg> list = adminRepo.findByUserIdAndMobile(uid, mobile);
+		return list;
 	}
 }
