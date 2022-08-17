@@ -9,6 +9,7 @@ public interface AdminRegRepo extends JpaRepository<AdminReg, Integer>{
 	
 	List<AdminReg> findByUserIdAndPass(String userId,String pass);
 	List<AdminReg> findByUserId(String userId);
+	List<AdminReg> findById(int id);
 	String findByPass(String pass);
 	boolean existsByUserId(String userId);
 

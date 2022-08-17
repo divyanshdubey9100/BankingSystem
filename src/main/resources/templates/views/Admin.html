@@ -6,9 +6,10 @@
 <!-- <script src="jquery.js"></script> -->
 </head>
 <body>
-	<h1>Welcome To Admin Panel Of WGS Bank</h1>
-	<p th:text="${name}"></p>
-	<br><br>
+	<h3>
+		Welcome <span th:text="${name}" /></p>
+	</h3>
+
 	<a href="/openAccount">open Account</a>
 	<br>
 	<br>
@@ -20,17 +21,8 @@
 	<br>
 
 	<a href="/findAdminDetail">findAdminDetail</a>
-	<br> <br>
-	<button onclick="logout()">Logout</button>
-	
 	<br>
 	<br>
-	<script type="text/javascript">
-
-	function logout(){
-		window.open("/","_parent");
-	}
-
-</script>
+	<a href="/logout">Logout</a>
 </body>
 </html>
