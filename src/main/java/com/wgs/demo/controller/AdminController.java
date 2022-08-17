@@ -2,6 +2,8 @@ package com.wgs.demo.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,10 +29,13 @@ public class AdminController {
 	AdminImpl adminImpl;
 
 	@RequestMapping("admin")
-	private String adminUi() {
-//		String name=adminImpl.findByuId(userId);
-//		System.out.println(name);
-//		model.addAttribute("name",name);
+	private String adminUi(Model model, HttpSession session) {
+		Object userName = session.getAttribute("name");
+		if (userName == null) {
+			return "redirect:/adminLogin";
+		}
+
+		model.addAttribute("name", userName);
 		return "views/Admin";
 	}
 
@@ -39,9 +44,20 @@ public class AdminController {
 		return "views/adminLogin";
 	}
 
+	@RequestMapping("/logout")
+	private String logout(HttpSession session) {
+		session.invalidate();
+		return "redirect:/adminLogin";
+	}
+
 	@RequestMapping("adminAuth")
-	private String adminAuth(@RequestParam String userId, @RequestParam String pass, Model model,AdminReg reg) {
+	private String adminAuth(@RequestParam String userId, @RequestParam String pass, Model model, AdminReg reg,
+			HttpSession session) {
 		if (adminImpl.adminAuthintication(userId, pass) == true) {
+			List<AdminReg> list = adminImpl.findByuId(userId);
+			for (AdminReg regList : list) {
+				session.setAttribute("name", regList.getName());
+			}
 			return "redirect:/admin";
 		} else {
 			return "redirect:/adminLogin";
@@ -72,12 +88,18 @@ public class AdminController {
 	}
 
 	@RequestMapping("findAdminDetail")
-	private String findAdminDetail() {
+	private String findAdminDetail(HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		return "views/findAdminDetail";
 	}
 
 	@RequestMapping("showAllAdmin")
-	private String showAllAdmin(Model model) {
+	private String showAllAdmin(Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		if (adminImpl.getTokenId() != 0) {
 			List<AdminReg> adList = adminRepo.findAll();
 			model.addAttribute("cust", adList);
@@ -90,7 +112,10 @@ public class AdminController {
 	}
 
 	@RequestMapping("deleteAdmin")
-	private String deleteAdminInfo(@RequestParam int id, Model model) {
+	private String deleteAdminInfo(@RequestParam int id, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		adminRepo.deleteById(id);
 		adminRepo.flush();
 		String mes = id + " is Deleted Successfully";
@@ -99,38 +124,51 @@ public class AdminController {
 		return "redirect:/showAllAdmin";
 	}
 
-//	@RequestMapping("edit")
-//	private String editCustomerInfo(@RequestParam int accno, Model model) {
-//		List<Customer> acList = custRepo.findByAccno(accno);
-//		model.addAttribute("cust", acList);
-//		return "views/editCustomerDeatils";
-//	}
-//	@RequestMapping("editAdminDetail")
-//	private String editAdminDetail(AdminReg admin, Model model) {
-//		System.out.println(admin);
-//		if (impl.isMobileExists(admin.getMobile()) == false && impl.isAccExists(admin.getUserId() == true) {
-////			custRepo.saveAndFlush(admin);
-////			model.addAttribute("cust", admin);
-//			custRepo.flush();
-//			return "views/customerList";
-//		} else if (impl.isAccExists(customer.getAccno()) == false) {
-//			String mes = customer.getAccno() + " already exists! plz Wait...";
-//			System.out.println(mes);
-//			model.addAttribute("cust", mes);
-//		} else if (impl.isMobileExists(customer.getMobile()) == true) {
-//			String mes = "Try with new Mobile No.. " + customer.getMobile() + " already exists!";
-//			model.addAttribute("cust", mes);
-//		}
-//		return "views/customerAccountDetails";
-//	}
+	@RequestMapping("editAdmin")
+	private String editAdminInfo(@RequestParam int id, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
+		List<AdminReg> acList = adminRepo.findById(id);
+		model.addAttribute("cust", acList);
+		return "views/editAdminDetails";
+	}
+
+	@RequestMapping("editAdminDetail")
+	private String editAdminDetail(AdminReg admin, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
+		System.out.println(admin);
+		if (impl.isMobileExists(admin.getMobile()) == false && adminImpl.isUserIdExists(admin.getUserId()) == true) {
+			adminRepo.saveAndFlush(admin);
+			model.addAttribute("cust", admin);
+			custRepo.flush();
+			return "views/adminList";
+		} else if (adminImpl.isUserIdExists(admin.getUserId()) == false) {
+			String mes = admin.getUserId() + " not avail! plz Wait...";
+			System.out.println(mes);
+			model.addAttribute("cust", mes);
+		} else if (adminImpl.isMobileExists(admin.getMobile()) == true) {
+			String mes = "Try with new Mobile No.. " + admin.getMobile() + " already exists!";
+			model.addAttribute("cust", mes);
+		}
+		return "views/customerAccountDetails";
+	}
 
 	@RequestMapping("openAccount")
-	private String openAccount() {
+	private String openAccount(HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		return "views/openAccount";
 	}
 
 	@RequestMapping("customerAccountDetails")
-	private String customerAccountDetails(Customer customer, Model model) {
+	private String customerAccountDetails(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		int accno = 1000 + impl.getTokenId();
 		try {
 			for (int i = 0; i <= impl.getTokenId(); i++) {
@@ -164,12 +202,18 @@ public class AdminController {
 	}
 
 	@RequestMapping("findCustomerDetails")
-	private String findCustomerDetails() {
+	private String findCustomerDetails(HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		return "views/findCustomerDetails";
 	}
 
 	@RequestMapping("showAllCustomers")
-	private String showAllCustomers(Model model) {
+	private String showAllCustomers(Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		if (impl.getTokenId() != 0) {
 			List<Customer> custList = custRepo.findAll();
 			model.addAttribute("cust", custList);
@@ -182,8 +226,11 @@ public class AdminController {
 	}
 
 	@RequestMapping("findByAccno")
-	private String detailsBasedOnAccNO(Model model, Customer customer) {
+	private String detailsBasedOnAccNO(Model model, Customer customer, HttpSession session) {
 		if (impl.isAccExists(customer.getAccno()) == true) {
+			if (session.getAttribute("name") == null) {
+				return "redirect:/adminLogin";
+			}
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 			model.addAttribute("cust", custList);
 			return "views/customerList";
@@ -195,7 +242,10 @@ public class AdminController {
 	}
 
 	@RequestMapping("findByName")
-	private String findByName(Model model, Customer customer) {
+	private String findByName(Model model, Customer customer, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		if (impl.isPersonExists(customer.getName()) == true) {
 			List<Customer> custList = custRepo.findByName(customer.getName());
 			model.addAttribute("cust", custList);
@@ -208,7 +258,10 @@ public class AdminController {
 	}
 
 	@RequestMapping("findByMobile")
-	private String findByMobile(Customer customer, Model model) {
+	private String findByMobile(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		if (impl.isMobileExists(customer.getMobile()) == true) {
 			List<Customer> custList = custRepo.findByMobile(customer.getMobile());
 			model.addAttribute("cust", custList);
@@ -221,7 +274,10 @@ public class AdminController {
 	}
 
 	@RequestMapping("findByEmail")
-	private String findByEmail(Customer customer, Model model) {
+	private String findByEmail(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		if (impl.isMailExists(customer.getEmail()) == true) {
 			List<Customer> custList = custRepo.findByEmail(customer.getEmail());
 			model.addAttribute("cust", custList);
@@ -234,12 +290,18 @@ public class AdminController {
 	}
 
 	@RequestMapping("banking")
-	private String banking() {
+	private String banking(HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		return "views/banking";
 	}
 
 	@RequestMapping("deposit")
-	private String deposit(Customer customer, Model model) {
+	private String deposit(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		if (impl.isAccExists(customer.getAccno()) == true) {
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 			for (Customer cust : custList) {
@@ -261,7 +323,10 @@ public class AdminController {
 	}
 
 	@RequestMapping("withdraw")
-	private String withdraw(Customer customer, Model model) {
+	private String withdraw(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		if (impl.isAccExists(customer.getAccno()) == true) {
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 			for (Customer cust : custList) {
@@ -287,7 +352,10 @@ public class AdminController {
 	}
 
 	@RequestMapping("checkBalance")
-	private String checkBalance(Customer customer, Model model) {
+	private String checkBalance(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 		for (Customer cust : custList) {
 			String bal = "Hello " + cust.getName() + " your a/c : " + cust.getAccno() + " balance : "
@@ -300,7 +368,10 @@ public class AdminController {
 	}
 
 	@RequestMapping("deleteByAccno")
-	private String deleteByAccno(Customer customer, Model model) {
+	private String deleteByAccno(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		if (impl.isAccExists(customer.getAccno()) == true) {
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 			for (Customer cust : custList) {
@@ -319,14 +390,20 @@ public class AdminController {
 	}
 
 	@RequestMapping("edit")
-	private String editCustomerInfo(@RequestParam int accno, Model model) {
+	private String editCustomerInfo(@RequestParam int accno, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		List<Customer> acList = custRepo.findByAccno(accno);
 		model.addAttribute("cust", acList);
-		return "views/editCustomerDeatils";
+		return "views/editCustomerDetails";
 	}
 
 	@RequestMapping("editCustomerDetail")
-	private String editCustomerDetail(Customer customer, Model model) {
+	private String editCustomerDetail(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		System.out.println(customer);
 		if (impl.isMobileExists(customer.getMobile()) == false && impl.isAccExists(customer.getAccno()) == true) {
 			custRepo.saveAndFlush(customer);
@@ -345,7 +422,10 @@ public class AdminController {
 	}
 
 	@RequestMapping("delete")
-	private String deleteCustomerInfo(@RequestParam int accno, Model model) {
+	private String deleteCustomerInfo(@RequestParam int accno, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
 		String mes = accno + " is Deleted Successfully";
 		custRepo.deleteById(accno);
 		custRepo.flush();

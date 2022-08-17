@@ -35,12 +35,9 @@ public class AdminImpl {
 		}
 	}
 
-	public String findByuId(String userId){
+	public List<AdminReg> findByuId(String userId){
 		List<AdminReg> list =adminRepo.findByUserId(userId);
-		for(AdminReg reg:list) {
-			String name=reg.getName();
-		}
-		return "name";
+		return list;
 	}
 	
 	public boolean adminAuthintication(String uid, String pass) {
