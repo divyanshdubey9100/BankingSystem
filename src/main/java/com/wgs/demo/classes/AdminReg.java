@@ -1,6 +1,7 @@
 package com.wgs.demo.classes;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -8,57 +9,52 @@ import javax.persistence.UniqueConstraint;
 import org.springframework.stereotype.Component;
 
 
-@Table(name = "Customer", uniqueConstraints = @UniqueConstraint(columnNames = { "accno", "mobile" }))
+@Table(name = "admin_reg", uniqueConstraints = @UniqueConstraint(columnNames = { "userId", "mobile" }))
 @Entity
 @Component
-public class Customer {
+public class AdminReg {
 	@Id
-	private int accno;
-	private String email;
+	@GeneratedValue
+	private int id;
+	private String userId;
 	private String name;
 	private String mobile;
-	private int balance;
+	private String pass;
 	private String gender;
 	private String address;
 
-	public Customer() {
+	public AdminReg() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Customer(int accno,String email, String name, String mobile, int balance, String gender, String address) {
+	public AdminReg(int id, String userId, String name, String mobile, String pass, String gender, String address) {
 		super();
-		this.accno = accno;
+		this.id = id;
+		this.userId = userId;
 		this.name = name;
 		this.mobile = mobile;
+		this.pass = pass;
 		this.gender = gender;
 		this.address = address;
-		this.balance = balance;
-		this.email=email;
 	}
 
-	public String getEmail() {
-		return email;
+	public int getId() {
+		return id;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public int getBalance() {
-		return balance;
+	
+
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setBalance(int balance) {
-		this.balance = balance;
-	}
-
-	public int getAccno() {
-		return accno;
-	}
-
-	public void setAccno(int accno) {
-		this.accno = accno;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getName() {
@@ -75,6 +71,14 @@ public class Customer {
 
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
+	}
+
+	public String getPass() {
+		return pass;
+	}
+
+	public void setPass(String pass) {
+		this.pass = pass;
 	}
 
 	public String getGender() {
@@ -95,12 +99,10 @@ public class Customer {
 
 	@Override
 	public String toString() {
-		return "Customer [accno=" + accno + ", email=" + email + ", name=" + name + ", mobile=" + mobile + ", balance="
-				+ balance + ", gender=" + gender + ", address=" + address + "]";
+		return "Admin [id=" + id + ", userId=" + userId + ", name=" + name + ", mobile=" + mobile + ", pass=" + pass
+				+ ", gender=" + gender + ", address=" + address + "]";
 	}
 
-	
 
-	
 
 }
