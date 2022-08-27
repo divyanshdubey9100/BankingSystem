@@ -1,19 +1,18 @@
-package com.wgs.demo.cust;
+package com.wgs.demo.classes;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.springframework.stereotype.Component;
 
-@Entity
-@Table(name = "Customer", uniqueConstraints = @UniqueConstraint(columnNames = { "accno", "mobile" }))
 
+@Table(name = "Customer", uniqueConstraints = @UniqueConstraint(columnNames = { "accno", "mobile" }))
+@Entity
 @Component
 public class Customer {
 	@Id
 	private int accno;
+	private String email;
 	private String name;
 	private String mobile;
 	private int balance;
@@ -25,7 +24,7 @@ public class Customer {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Customer(int accno, String name, String mobile, int balance, String gender, String address) {
+	public Customer(int accno,String email, String name, String mobile, int balance, String gender, String address) {
 		super();
 		this.accno = accno;
 		this.name = name;
@@ -33,6 +32,15 @@ public class Customer {
 		this.gender = gender;
 		this.address = address;
 		this.balance = balance;
+		this.email=email;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public int getBalance() {
@@ -85,8 +93,12 @@ public class Customer {
 
 	@Override
 	public String toString() {
-		return "Customer [accno=" + accno + ", name=" + name + ", mobile=" + mobile + ", balance=" + balance
-				+ ", gender=" + gender + ", address=" + address + "]";
+		return "Customer [accno=" + accno + ", email=" + email + ", name=" + name + ", mobile=" + mobile + ", balance="
+				+ balance + ", gender=" + gender + ", address=" + address + "]";
 	}
+
+	
+
+	
 
 }
