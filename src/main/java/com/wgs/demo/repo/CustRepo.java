@@ -21,4 +21,8 @@ public interface CustRepo extends JpaRepository<Customer, Integer> {
 	boolean existsByName(String name);
 	
 	boolean existsByEmail(String email);
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 18ec1090d7c2d1c474902dffd040ad203a1c3000

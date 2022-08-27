@@ -10,6 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+<<<<<<< HEAD
+=======
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
+>>>>>>> 18ec1090d7c2d1c474902dffd040ad203a1c3000
 import com.wgs.demo.classes.AdminReg;
 import com.wgs.demo.classes.Customer;
 import com.wgs.demo.impl.AdminImpl;

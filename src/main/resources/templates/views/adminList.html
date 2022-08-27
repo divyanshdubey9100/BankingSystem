@@ -11,35 +11,35 @@
 	<table border="1" width="auto" padding="5%">
 		<thead>
 			<tr>
-				<th>accno</th>
+				<th>id</th>
+				<th>userId</th>
 				<th>name</th>
-				<th>email</th>
 				<th>mobile</th>
-				<th>balance</th>
+				<th>password</th>
 				<th>gender</th>
 				<th>address</th>
-				<th>Edit</th>
+				<th>edit</th>
 				<th>Delete</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr th:each="temp:${cust}">
-				<td th:text="${temp.accno}" />
+				<td th:text="${temp.id}" />
+				<td th:text="${temp.userId}" />
 				<td th:text="${temp.name}" />
-				<td th:text="${temp.email}" />
 				<td th:text="${temp.mobile}" />
-				<td th:text="${temp.balance}" />
+				<td th:text="${temp.pass}" />
 				<td th:text="${temp.gender}" />
 				<td th:text="${temp.address}" />
 				<td>
-					<form action="/edit">
-						<input type="hidden" name="accno" th:value="${temp.accno}">
+					<form action="/editAdmin" method="post">
+						<input type="hidden" name="id" th:value="${temp.id}">
 						<input type="submit" value="edit">
 					</form>
 				</td>
 				<td>
-					<form action="/delete">
-						<input type="hidden" name="accno" th:value="${temp.accno}">
+					<form action="/deleteAdmin">
+						<input type="hidden" name="id" th:value="${temp.id}">
 						<input type="submit" value="delete">
 					</form>
 				</td>
@@ -48,6 +48,6 @@
 	</table>
 	<br>
 	<br>
-	<a href="/admin" style="margin-left: 5%">Back</a>
+	<a href="/admin" style="margin-left: 5%">AdminPanel</a>
 </body>
 </html>

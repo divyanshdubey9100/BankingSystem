@@ -9,6 +9,8 @@ import com.wgs.demo.cust.Customer;
 import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.repo.CustRepo;
 
+//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
+
 @Controller
 public class WebController {
 	@Autowired
