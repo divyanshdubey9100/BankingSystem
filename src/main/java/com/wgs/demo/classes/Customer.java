@@ -8,11 +8,7 @@ import javax.persistence.UniqueConstraint;
 import org.springframework.stereotype.Component;
 
 
-<<<<<<< HEAD
 @Table(name = "Customer", uniqueConstraints = @UniqueConstraint(columnNames = { "accno", "mobile" }))
-=======
-//@Table(name = "Customer", uniqueConstraints = @UniqueConstraint(columnNames = { "accno", "mobile" }))
->>>>>>> 18ec1090d7c2d1c474902dffd040ad203a1c3000
 @Entity
 @Component
 public class Customer {
@@ -107,8 +103,5 @@ public class Customer {
 
 	
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 18ec1090d7c2d1c474902dffd040ad203a1c3000
+

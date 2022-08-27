@@ -60,8 +60,5 @@ public class AdminImpl {
 		List<AdminReg> list = adminRepo.findByUserIdAndMobile(uid, mobile);
 		return list;
 	}
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> 18ec1090d7c2d1c474902dffd040ad203a1c3000

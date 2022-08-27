@@ -9,11 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-<<<<<<< HEAD
-=======
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
->>>>>>> 18ec1090d7c2d1c474902dffd040ad203a1c3000
 import com.wgs.demo.classes.AdminReg;
 import com.wgs.demo.classes.Customer;
 import com.wgs.demo.impl.AdminImpl;
@@ -78,8 +73,8 @@ public class AdminController {
 		if (adminImpl.isUserIdExists(admin.getUserId()) == false
 				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
 			AdminReg adList = adminRepo.save(admin);
-			model.addAttribute("cust", adList);
-			return "views/adminList";
+			String mes=adList+" created Successfully!";
+			model.addAttribute("cust", mes);
 		} else if (adminImpl.isUserIdExists(admin.getUserId()) == true) {
 			String mes = admin.getUserId() + " Already Exists";
 			model.addAttribute("cust", mes);
