@@ -45,7 +45,7 @@ public class AdminController {
 
 	@RequestMapping("/logout")
 	private String logout(HttpSession session) {
-		session.invalidate();
+		session.removeAttribute("name");
 		return "redirect:/adminLogin";
 	}
 
@@ -180,7 +180,7 @@ public class AdminController {
 	}
 
 	@RequestMapping("resetPass")
-	private String forgetPwd(@RequestParam String mobile, String userId, Model model, AdminReg admin) {
+	private String forgetPwd(@RequestParam String mobile, String userId, Model model) {
 		List<AdminReg> list = adminImpl.findUidAndMobile(userId, mobile);
 		if (list.size() != 0) {
 			model.addAttribute("cust", list);
@@ -276,7 +276,7 @@ public class AdminController {
 			}
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 			model.addAttribute("cust", custList);
-			return "views/customerList";
+			return "views/customerEditList";
 		} else {
 			String msg = "Hii : Invalid A/c no.";
 			model.addAttribute("cust", msg);
@@ -292,7 +292,7 @@ public class AdminController {
 		if (impl.isPersonExists(customer.getName()) == true) {
 			List<Customer> custList = custRepo.findByName(customer.getName());
 			model.addAttribute("cust", custList);
-			return "views/customerList";
+			return "views/customerEditList";
 		} else {
 			String msg = "Hii : No Person Exists!.";
 			model.addAttribute("cust", msg);
@@ -308,7 +308,7 @@ public class AdminController {
 		if (impl.isMobileExists(customer.getMobile()) == true) {
 			List<Customer> custList = custRepo.findByMobile(customer.getMobile());
 			model.addAttribute("cust", custList);
-			return "views/customerList";
+			return "views/customerEditList";
 		} else {
 			String msg = "Hii : Invalid Mobile No.";
 			model.addAttribute("cust", msg);
@@ -324,7 +324,7 @@ public class AdminController {
 		if (impl.isMailExists(customer.getEmail()) == true) {
 			List<Customer> custList = custRepo.findByEmail(customer.getEmail());
 			model.addAttribute("cust", custList);
-			return "views/customerList";
+			return "views/customerEditList";
 		} else {
 			String msg = "Hii : Invalid Mail_id.";
 			model.addAttribute("cust", msg);
@@ -452,7 +452,7 @@ public class AdminController {
 			custRepo.saveAndFlush(customer);
 			model.addAttribute("cust", customer);
 			custRepo.flush();
-			return "views/customerList";
+			return "views/customerEditList";
 		} else if (impl.isAccExists(customer.getAccno()) == false) {
 			String mes = customer.getAccno() + " already exists! plz Wait...";
 			System.out.println(mes);

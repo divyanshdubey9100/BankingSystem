@@ -5,16 +5,13 @@
 <title>Customer Panel</title>
 </head>
 <body>
-	<h1>Welcome To WGS Bank</h1>
+	<h3>
+		Welcome <span th:text="${name}" /></p>
+	</h3>
 	<a href="/editAccountDetails">Edit Account Details</a><br><br>
 	<a href="/checkBalanceByCust">Check Balance</a><br><br>
 	<a href="/checkAccountStatement">Statements</a><br><br>
-<button onclick="logout()">Logout</button>
-<script type="text/javascript">
-
-	function logout(){
-		window.open("/","_parent");
-	}
- </script>
+	<br>
+	<a href="/custLogout">Logout</a>
 </body>
 </html>
