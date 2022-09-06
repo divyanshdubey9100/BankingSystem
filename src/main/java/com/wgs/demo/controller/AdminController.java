@@ -45,7 +45,7 @@ public class AdminController {
 
 	@RequestMapping("/logout")
 	private String logout(HttpSession session) {
-		session.invalidate();
+		session.removeAttribute("name");
 		return "redirect:/adminLogin";
 	}
 
@@ -180,7 +180,7 @@ public class AdminController {
 	}
 
 	@RequestMapping("resetPass")
-	private String forgetPwd(@RequestParam String mobile, String userId, Model model, AdminReg admin) {
+	private String forgetPwd(@RequestParam String mobile, String userId, Model model) {
 		List<AdminReg> list = adminImpl.findUidAndMobile(userId, mobile);
 		if (list.size() != 0) {
 			model.addAttribute("cust", list);

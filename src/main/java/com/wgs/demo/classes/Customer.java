@@ -8,7 +8,7 @@ import javax.persistence.UniqueConstraint;
 import org.springframework.stereotype.Component;
 
 
-@Table(name = "Customer", uniqueConstraints = @UniqueConstraint(columnNames = { "accno", "mobile" }))
+@Table(name = "Customer", uniqueConstraints = @UniqueConstraint(columnNames = { "accno", "mobile","email" }))
 @Entity
 @Component
 public class Customer {
@@ -20,13 +20,14 @@ public class Customer {
 	private int balance;
 	private String gender;
 	private String address;
+	private String pass;
 
 	public Customer() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Customer(int accno,String email, String name, String mobile, int balance, String gender, String address) {
+	public Customer(int accno,String email, String name, String mobile, int balance, String gender, String address,String pass) {
 		super();
 		this.accno = accno;
 		this.name = name;
@@ -35,6 +36,17 @@ public class Customer {
 		this.address = address;
 		this.balance = balance;
 		this.email=email;
+		this.pass=pass;
+	}
+
+	
+	
+	public String getPass() {
+		return pass;
+	}
+
+	public void setPass(String pass) {
+		this.pass = pass;
 	}
 
 	public String getEmail() {
@@ -96,12 +108,7 @@ public class Customer {
 	@Override
 	public String toString() {
 		return "Customer [accno=" + accno + ", email=" + email + ", name=" + name + ", mobile=" + mobile + ", balance="
-				+ balance + ", gender=" + gender + ", address=" + address + "]";
+				+ balance + ", gender=" + gender + ", address=" + address + ", pass=" + pass + "]";
 	}
-
-	
-
-	
-
 }
 

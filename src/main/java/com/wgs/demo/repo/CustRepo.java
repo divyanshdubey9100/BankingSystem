@@ -11,6 +11,12 @@ public interface CustRepo extends JpaRepository<Customer, Integer> {
 	List<Customer> findByAccno(int accno);
 
 	List<Customer> findByName(String name);
+	
+	List<Customer> findByEmailAndPass(String email,String pass);
+	
+	List<Customer> findByEmailAndMobile(String email,String mob);
+	
+	List<Customer> findByNameAndMobile(String name, String mobile);
 
 	List<Customer> findByMobile(String mobile);
 	
@@ -21,5 +27,6 @@ public interface CustRepo extends JpaRepository<Customer, Integer> {
 	boolean existsByName(String name);
 	
 	boolean existsByEmail(String email);
-
+	
+	
 }

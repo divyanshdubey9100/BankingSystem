@@ -5,11 +5,12 @@
 <title>Customer Login Panel</title>
 </head>
 <body>
-	<form action="/customer" method="post">
+	<form action="/custAuth" method="post">
 	<h3>Customer Login</h3>
-		<input type="number" name="accno" placeholder="enter accno" required="required"> <br><br>
+		<input type="email" name="email" placeholder="Enter Your email" required="required"><br><br>
 		<input type="password" name="pass" placeholder="enter password" required="required"><br><br>
 		<input type="submit" value="submit">
+		<a href="/customerHelp" style="margin-left: 2%" >Help</a><br><br>
 	</form>
 </body>
 </html>
