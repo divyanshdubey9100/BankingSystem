@@ -1,5 +1,8 @@
 package com.wgs.demo.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -11,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.wgs.demo.classes.AdminReg;
 import com.wgs.demo.classes.Customer;
+import com.wgs.demo.classes.IndividualCustomer;
 import com.wgs.demo.impl.AdminImpl;
 import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.repo.AdminRegRepo;
 import com.wgs.demo.repo.CustRepo;
+import com.wgs.demo.repo.IndividualTrxRepo;
 
 @Controller
 public class AdminController {
@@ -26,7 +31,10 @@ public class AdminController {
 	MethodImpl impl;
 	@Autowired
 	AdminImpl adminImpl;
-
+	@Autowired
+	IndividualTrxRepo trxRepo;
+	
+	List<IndividualCustomer> indivList=new ArrayList<IndividualCustomer>();
 	@RequestMapping("admin")
 	private String adminUi(Model model, HttpSession session) {
 		Object userName = session.getAttribute("name");
@@ -341,7 +349,7 @@ public class AdminController {
 	}
 
 	@RequestMapping("deposit")
-	private String deposit(Customer customer, Model model, HttpSession session) {
+	private String deposit(Customer customer, Model model, HttpSession session,IndividualCustomer indivCust) {
 		if (session.getAttribute("name") == null) {
 			return "redirect:/adminLogin";
 		}
@@ -349,8 +357,17 @@ public class AdminController {
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 			for (Customer cust : custList) {
 				if (impl.isAccExists(customer.getAccno()) == true) {
+					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss").format(Calendar.getInstance().getTime());
+					indivCust.setCustName(cust.getName());
+					indivCust.setAccNo(cust.getAccno());
+					indivCust.setAmtBefTrx(cust.getBalance());
+					indivCust.setTrxAmt(customer.getBalance());
 					int newAmount = cust.getBalance() + customer.getBalance();
+					indivCust.setCurrentBalance(newAmount);
+					indivCust.setTrxDate(timeStamp);
+					indivCust.setTrxMode("Credit");
 					cust.setBalance(newAmount);
+					trxRepo.save(indivCust);
 					String msg = "Hi " + cust.getName() + " " + customer.getBalance()
 							+ " is Successfully Deposited in A/c : " + cust.getAccno() + " Updated Balance is "
 							+ cust.getBalance();
@@ -366,7 +383,7 @@ public class AdminController {
 	}
 
 	@RequestMapping("withdraw")
-	private String withdraw(Customer customer, Model model, HttpSession session) {
+	private String withdraw(Customer customer, Model model, HttpSession session,IndividualCustomer indivCust) {
 		if (session.getAttribute("name") == null) {
 			return "redirect:/adminLogin";
 		}
@@ -374,8 +391,17 @@ public class AdminController {
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 			for (Customer cust : custList) {
 				if ((cust.getBalance() - customer.getBalance()) > 1000 && cust.getBalance() > customer.getBalance()) {
+					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss").format(Calendar.getInstance().getTime());
+					indivCust.setCustName(cust.getName());
+					indivCust.setAccNo(cust.getAccno());
+					indivCust.setAmtBefTrx(cust.getBalance());
+					indivCust.setTrxAmt(customer.getBalance());					
 					int newAmount = cust.getBalance() - customer.getBalance();
+					indivCust.setCurrentBalance(newAmount);
+					indivCust.setTrxDate(timeStamp);
+					indivCust.setTrxMode("Debit");
 					cust.setBalance(newAmount);
+					trxRepo.save(indivCust);
 					String msg = "Hi : " + cust.getName() + " : " + customer.getBalance()
 							+ " is Successfully Withdrawn in a/c : " + cust.getAccno() + " Updated Balance is : "
 							+ cust.getBalance();
