@@ -1,5 +1,7 @@
 package com.wgs.demo.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +90,9 @@ public class MethodImpl {
 	}
 
 	public int trxIdGen(int accno) {
-		return getTrxToken() + accno + 12345;
+		String timeStamp = new SimpleDateFormat("ddMMhhmm").format(Calendar.getInstance().getTime());
+		int time=Integer.parseInt(timeStamp);
+		return getTrxToken() *accno+time;
 	}
 
 }

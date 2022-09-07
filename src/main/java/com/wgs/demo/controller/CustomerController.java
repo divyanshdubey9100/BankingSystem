@@ -196,7 +196,7 @@ public class CustomerController {
 			for (Customer cust : custList) {
 				if (impl.isAccExists(customer.getAccno()) == true) {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss").format(Calendar.getInstance().getTime());
-					int trxId=1+impl.trxIdGen(customer.getAccno());
+					int trxId=impl.trxIdGen(customer.getAccno());
 					indivCust.setTrxId(trxId);
 					indivCust.setCustName(cust.getName());
 					indivCust.setAccNo(cust.getAccno());
