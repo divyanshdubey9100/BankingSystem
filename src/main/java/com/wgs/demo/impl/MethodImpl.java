@@ -8,11 +8,14 @@ import org.springframework.stereotype.Component;
 import com.wgs.demo.classes.AdminReg;
 import com.wgs.demo.classes.Customer;
 import com.wgs.demo.repo.CustRepo;
+import com.wgs.demo.repo.IndividualTrxRepo;
 
 @Component
 public class MethodImpl {
 	@Autowired
 	CustRepo custRepo;
+	@Autowired
+	IndividualTrxRepo trxRepo;
 
 	public boolean isAccExists(int accno) {
 		boolean acc = custRepo.existsById(accno);
@@ -80,6 +83,12 @@ public class MethodImpl {
 		return list;
 	}
 
-	
+	public int getTrxToken() {
+		return (int) trxRepo.count();
+	}
+
+	public int trxIdGen(int accno) {
+		return getTrxToken() + accno + 12345;
+	}
 
 }

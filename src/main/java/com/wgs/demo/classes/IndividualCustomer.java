@@ -1,7 +1,6 @@
 package com.wgs.demo.classes;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.springframework.stereotype.Component;
@@ -16,7 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class IndividualCustomer {
 	@Id
-	@GeneratedValue
 	private int trxId;
 	private int accNo;
 	private String custName;

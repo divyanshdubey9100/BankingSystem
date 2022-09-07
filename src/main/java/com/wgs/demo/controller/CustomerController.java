@@ -61,13 +61,13 @@ public class CustomerController {
 
 	@RequestMapping("checkAccountStatement")
 	private String checkAccountStatement(Customer customer, Model model, HttpSession session) {
-		if (session.getAttribute("custName") == null) {
+		if (session.getAttribute("custName") == null && session.getAttribute("custAccno") == null) {
 			return "redirect:/customerLogin";
 		}
-		String mes = "Work in Progress";
-		System.out.println(mes);
-		model.addAttribute("cust", mes);
-		return "views/customerDetails";
+		int accNo=(int) session.getAttribute("custAccno");
+		List<IndividualCustomer> list=trxRepo.findByAccNo(accNo);
+		model.addAttribute("cust", list);
+		return "views/custAccStmt";
 	}
 
 	@RequestMapping("customerHelp")
@@ -132,7 +132,7 @@ public class CustomerController {
 
 	@RequestMapping("custWithdraw")
 	private String withdraw(Customer customer, Model model, HttpSession session,IndividualCustomer indivCust) {
-		if (session.getAttribute("name") == null && session.getAttribute("custAccno") == null) {
+		if (session.getAttribute("custName") == null && session.getAttribute("custAccno") == null) {
 			return "redirect:/customerLogin";
 		}
 		if (impl.isAccExists(customer.getAccno()) == true) {
@@ -140,6 +140,8 @@ public class CustomerController {
 			for (Customer cust : custList) {
 				if ((cust.getBalance() - customer.getBalance()) > 1000 && cust.getBalance() > customer.getBalance()) {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss").format(Calendar.getInstance().getTime());
+					int trxId=1+impl.trxIdGen(customer.getAccno());
+					indivCust.setTrxId(trxId);
 					indivCust.setCustName(cust.getName());
 					indivCust.setAccNo(cust.getAccno());
 					indivCust.setAmtBefTrx(cust.getBalance());
@@ -149,7 +151,7 @@ public class CustomerController {
 					indivCust.setTrxDate(timeStamp);
 					indivCust.setTrxMode("Debit");
 					cust.setBalance(newAmount);
-					trxRepo.save(indivCust);
+					trxRepo.saveAndFlush(indivCust);
 					String msg = "Hi : " + cust.getName() + " : " + customer.getBalance()
 							+ " is Successfully Withdrawn in a/c : " + cust.getAccno() + " Updated Balance is : "
 							+ cust.getBalance();
@@ -170,7 +172,7 @@ public class CustomerController {
 
 	@RequestMapping("custCheckBalance")
 	private String checkBalance(Customer customer, Model model, HttpSession session) {
-		if (session.getAttribute("name") == null && session.getAttribute("custAccno") == null) {
+		if (session.getAttribute("custName") == null && session.getAttribute("custAccno") == null) {
 			return "redirect:/customerLogin";
 		}
 		List<Customer> custList = custRepo.findByAccno(customer.getAccno());
@@ -186,7 +188,7 @@ public class CustomerController {
 
 	@RequestMapping("custDeposit")
 	private String deposit(Customer customer, Model model, HttpSession session,IndividualCustomer indivCust) {
-		if (session.getAttribute("name") == null && session.getAttribute("custAccno") == null) {
+		if (session.getAttribute("custName") == null && session.getAttribute("custAccno") == null) {
 			return "redirect:/customerLogin";
 		}
 		if (impl.isAccExists(customer.getAccno()) == true) {
@@ -194,6 +196,8 @@ public class CustomerController {
 			for (Customer cust : custList) {
 				if (impl.isAccExists(customer.getAccno()) == true) {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss").format(Calendar.getInstance().getTime());
+					int trxId=1+impl.trxIdGen(customer.getAccno());
+					indivCust.setTrxId(trxId);
 					indivCust.setCustName(cust.getName());
 					indivCust.setAccNo(cust.getAccno());
 					indivCust.setAmtBefTrx(cust.getBalance());
@@ -203,7 +207,7 @@ public class CustomerController {
 					indivCust.setTrxDate(timeStamp);
 					indivCust.setTrxMode("Credit");
 					cust.setBalance(newAmount);
-					trxRepo.save(indivCust);
+					trxRepo.saveAndFlush(indivCust);
 					String msg = "Hi " + cust.getName() + " " + customer.getBalance()
 							+ " is Successfully Deposited in A/c : " + cust.getAccno() + " Updated Balance is "
 							+ cust.getBalance();
@@ -220,7 +224,7 @@ public class CustomerController {
 	
 	@RequestMapping("custEdit")
 	private String editCustInfo(Model model, HttpSession session) {
-		if (session.getAttribute("name") == null && session.getAttribute("custAccno") == null) {
+		if (session.getAttribute("custName") == null && session.getAttribute("custAccno") == null) {
 			return "redirect:/customerLogin";
 		}
 		int accNo=(int) session.getAttribute("custAccno");
@@ -231,7 +235,7 @@ public class CustomerController {
 
 	@RequestMapping("editCustDetail")
 	private String editCustDetail(Customer customer, Model model, HttpSession session) {
-		if (session.getAttribute("name") == null && session.getAttribute("custAccno") == null) {
+		if (session.getAttribute("custName") == null && session.getAttribute("custAccno") == null) {
 			return "redirect:/customerLogin";
 		}
 		System.out.println(customer);
@@ -250,4 +254,5 @@ public class CustomerController {
 		}
 		return "views/customerDetails";
 	}
+	
 }

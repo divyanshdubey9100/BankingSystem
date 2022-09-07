@@ -1,7 +1,6 @@
 package com.wgs.demo.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import com.wgs.demo.classes.AdminReg;
 import com.wgs.demo.classes.Customer;
 import com.wgs.demo.classes.IndividualCustomer;
@@ -33,8 +33,7 @@ public class AdminController {
 	AdminImpl adminImpl;
 	@Autowired
 	IndividualTrxRepo trxRepo;
-	
-	List<IndividualCustomer> indivList=new ArrayList<IndividualCustomer>();
+
 	@RequestMapping("admin")
 	private String adminUi(Model model, HttpSession session) {
 		Object userName = session.getAttribute("name");
@@ -358,6 +357,8 @@ public class AdminController {
 			for (Customer cust : custList) {
 				if (impl.isAccExists(customer.getAccno()) == true) {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss").format(Calendar.getInstance().getTime());
+					int trxId=1+impl.trxIdGen(customer.getAccno());
+					indivCust.setTrxId(trxId);
 					indivCust.setCustName(cust.getName());
 					indivCust.setAccNo(cust.getAccno());
 					indivCust.setAmtBefTrx(cust.getBalance());
@@ -367,7 +368,7 @@ public class AdminController {
 					indivCust.setTrxDate(timeStamp);
 					indivCust.setTrxMode("Credit");
 					cust.setBalance(newAmount);
-					trxRepo.save(indivCust);
+					trxRepo.saveAndFlush(indivCust);
 					String msg = "Hi " + cust.getName() + " " + customer.getBalance()
 							+ " is Successfully Deposited in A/c : " + cust.getAccno() + " Updated Balance is "
 							+ cust.getBalance();
@@ -392,6 +393,8 @@ public class AdminController {
 			for (Customer cust : custList) {
 				if ((cust.getBalance() - customer.getBalance()) > 1000 && cust.getBalance() > customer.getBalance()) {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss").format(Calendar.getInstance().getTime());
+					int trxId=1+impl.trxIdGen(customer.getAccno());
+					indivCust.setTrxId(trxId);
 					indivCust.setCustName(cust.getName());
 					indivCust.setAccNo(cust.getAccno());
 					indivCust.setAmtBefTrx(cust.getBalance());
@@ -401,7 +404,7 @@ public class AdminController {
 					indivCust.setTrxDate(timeStamp);
 					indivCust.setTrxMode("Debit");
 					cust.setBalance(newAmount);
-					trxRepo.save(indivCust);
+					trxRepo.saveAndFlush(indivCust);
 					String msg = "Hi : " + cust.getName() + " : " + customer.getBalance()
 							+ " is Successfully Withdrawn in a/c : " + cust.getAccno() + " Updated Balance is : "
 							+ cust.getBalance();
