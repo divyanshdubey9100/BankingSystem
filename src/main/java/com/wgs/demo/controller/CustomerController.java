@@ -118,7 +118,7 @@ public class CustomerController {
 	private String logout(HttpSession session) {
 		session.removeAttribute("custName");
 		session.removeAttribute("custAccno");
-		return "redirect:/customerLogin";
+		return "redirect:/";
 	}
 
 	@RequestMapping("custBanking")
@@ -238,7 +238,6 @@ public class CustomerController {
 		if (session.getAttribute("custName") == null && session.getAttribute("custAccno") == null) {
 			return "redirect:/customerLogin";
 		}
-		System.out.println(customer);
 		if (impl.isMobileExists(customer.getMobile()) == false && impl.isAccExists(customer.getAccno()) == true) {
 			custRepo.saveAndFlush(customer);
 			model.addAttribute("cust", customer);

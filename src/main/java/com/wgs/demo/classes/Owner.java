@@ -1,6 +1,7 @@
 package com.wgs.demo.classes;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -18,6 +19,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Owner {
 	@Id
+	@GeneratedValue
+	private int id;
 	private String userId;
 	private String name;
 	private String mobile;

@@ -12,12 +12,11 @@ import com.wgs.demo.repo.OwnerRepo;
 public class OwnerImpl {
 	@Autowired
 	OwnerRepo ownerRepo;
-	
-	
+
 	public int getTokenId() {
 		return (int) ownerRepo.count();
 	}
-	
+
 	public boolean isUserIdExists(String userId) {
 		boolean id = ownerRepo.existsByUserId(userId);
 		if (id == true) {
@@ -50,6 +49,11 @@ public class OwnerImpl {
 				return false;
 		}
 		return false;
+	}
+
+	public List<Owner> getDetaislById(int id) {
+		List<Owner> list = ownerRepo.findById(id);
+		return list;
 	}
 
 }

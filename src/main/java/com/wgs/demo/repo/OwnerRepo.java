@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.wgs.demo.classes.Owner;
 
-public interface OwnerRepo extends JpaRepository<Owner, String> {
+public interface OwnerRepo extends JpaRepository<Owner, Integer> {
 
 	boolean existsByUserId(String userId);
 
@@ -16,4 +16,7 @@ public interface OwnerRepo extends JpaRepository<Owner, String> {
 
 	List<Owner> findByUserIdAndPass(String uid, String pass);
 
+	List<Owner> findByMobile(String mobile);
+	
+	List<Owner> findById(int id);
 }

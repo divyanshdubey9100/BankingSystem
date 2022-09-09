@@ -42,7 +42,7 @@ public class AdminController {
 	@RequestMapping("/logout")
 	private String logout(HttpSession session) {
 		session.removeAttribute("name");
-		return "redirect:/adminLogin";
+		return "redirect:/";
 	}
 
 	@RequestMapping("admin")
@@ -96,7 +96,7 @@ public class AdminController {
 			String mes = admin.getMobile() + " Already Exists";
 			model.addAttribute("cust", mes);
 		}
-		return "Admin/customerAccountDetails";
+		return "Owner/ownerDetails";
 
 	}
 
