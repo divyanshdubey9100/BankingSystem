@@ -42,12 +42,12 @@ public class AdminController {
 		}
 
 		model.addAttribute("name", userName);
-		return "views/Admin";
+		return "Admin/Admin";
 	}
 
 	@RequestMapping("adminLogin")
 	private String adminLogin() {
-		return "views/adminLogin";
+		return "Admin/adminLogin";
 	}
 
 	@RequestMapping("/logout")
@@ -72,7 +72,7 @@ public class AdminController {
 
 	@RequestMapping("registerAdmin")
 	private String registerAdmin() {
-		return "views/createAdminAcc";
+		return "Admin/createAdminAcc";
 	}
 
 	@RequestMapping("createAdminAcc")
@@ -89,7 +89,7 @@ public class AdminController {
 			String mes = admin.getMobile() + " Already Exists";
 			model.addAttribute("cust", mes);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 
 	}
 
@@ -98,7 +98,7 @@ public class AdminController {
 		if (session.getAttribute("name") == null) {
 			return "redirect:/adminLogin";
 		}
-		return "views/findAdminDetail";
+		return "Admin/findAdminDetail";
 	}
 
 	@RequestMapping("showAllAdmin")
@@ -109,12 +109,12 @@ public class AdminController {
 		if (adminImpl.getTokenId() != 0) {
 			List<AdminReg> adList = adminRepo.findAll();
 			model.addAttribute("cust", adList);
-			return "views/adminList";
+			return "Admin/adminList";
 		} else {
 			String msg = "Hii : Empty Response";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("deleteAdmin")
@@ -137,7 +137,7 @@ public class AdminController {
 		}
 		List<AdminReg> acList = adminRepo.findById(id);
 		model.addAttribute("cust", acList);
-		return "views/editAdminDetails";
+		return "Admin/editAdminDetails";
 	}
 
 	@RequestMapping("editAdminDetail")
@@ -150,7 +150,7 @@ public class AdminController {
 			adminRepo.saveAndFlush(admin);
 			model.addAttribute("cust", admin);
 			custRepo.flush();
-			return "views/adminList";
+			return "Admin/adminList";
 		} else if (adminImpl.isUserIdExists(admin.getUserId()) == false) {
 			String mes = admin.getUserId() + " not avail! plz Wait...";
 			System.out.println(mes);
@@ -159,17 +159,17 @@ public class AdminController {
 			String mes = "Try with new Mobile No.. " + admin.getMobile() + " already exists!";
 			model.addAttribute("cust", mes);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("help")
 	private String help() {
-		return "views/help";
+		return "Admin/help";
 	}
 
 	@RequestMapping("forgetUidAndPass")
 	private String forgetUidAndPass() {
-		return "views/forgetAdminDetails";
+		return "Admin/forgetAdminDetails";
 	}
 
 	@RequestMapping("resetUid")
@@ -183,7 +183,7 @@ public class AdminController {
 			String msg = "Hi " + name + " Mobile_no " + mobile + " No Details Found !";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("resetPass")
@@ -191,19 +191,19 @@ public class AdminController {
 		List<AdminReg> list = adminImpl.findUidAndMobile(userId, mobile);
 		if (list.size() != 0) {
 			model.addAttribute("cust", list);
-			return "views/resetPass";
+			return "Admin/resetPass";
 		} else {
 			String msg = "Hi " + userId + " Mobile_no " + mobile + " No Details Found !";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("updatePass")
 	private String updatePass(Model model, AdminReg admin) {
 		adminRepo.saveAndFlush(admin);
 		model.addAttribute("cust", admin.getPass());
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("openAccount")
@@ -211,7 +211,7 @@ public class AdminController {
 		if (session.getAttribute("name") == null) {
 			return "redirect:/adminLogin";
 		}
-		return "views/openAccount";
+		return "Admin/openAccount";
 	}
 
 	@RequestMapping("customerAccountDetails")
@@ -248,7 +248,7 @@ public class AdminController {
 		} catch (Exception e) {
 			System.out.println(e + " err hai err");
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("findCustomerDetails")
@@ -256,7 +256,7 @@ public class AdminController {
 		if (session.getAttribute("name") == null) {
 			return "redirect:/adminLogin";
 		}
-		return "views/findCustomerDetails";
+		return "Admin/findCustomerDetails";
 	}
 
 	@RequestMapping("showAllCustomers")
@@ -267,12 +267,12 @@ public class AdminController {
 		if (impl.getTokenId() != 0) {
 			List<Customer> custList = custRepo.findAll();
 			model.addAttribute("cust", custList);
-			return "views/customerList";
+			return "Admin/customerList";
 		} else {
 			String msg = "Hii : Empty Response";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("findByAccno")
@@ -283,12 +283,12 @@ public class AdminController {
 			}
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 			model.addAttribute("cust", custList);
-			return "views/customerEditList";
+			return "Admin/customerEditList";
 		} else {
 			String msg = "Hii : Invalid A/c no.";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("findByName")
@@ -299,12 +299,12 @@ public class AdminController {
 		if (impl.isPersonExists(customer.getName()) == true) {
 			List<Customer> custList = custRepo.findByName(customer.getName());
 			model.addAttribute("cust", custList);
-			return "views/customerEditList";
+			return "Admin/customerEditList";
 		} else {
 			String msg = "Hii : No Person Exists!.";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("findByMobile")
@@ -315,12 +315,12 @@ public class AdminController {
 		if (impl.isMobileExists(customer.getMobile()) == true) {
 			List<Customer> custList = custRepo.findByMobile(customer.getMobile());
 			model.addAttribute("cust", custList);
-			return "views/customerEditList";
+			return "Admin/customerEditList";
 		} else {
 			String msg = "Hii : Invalid Mobile No.";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("findByEmail")
@@ -331,12 +331,12 @@ public class AdminController {
 		if (impl.isMailExists(customer.getEmail()) == true) {
 			List<Customer> custList = custRepo.findByEmail(customer.getEmail());
 			model.addAttribute("cust", custList);
-			return "views/customerEditList";
+			return "Admin/customerEditList";
 		} else {
 			String msg = "Hii : Invalid Mail_id.";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("banking")
@@ -344,7 +344,7 @@ public class AdminController {
 		if (session.getAttribute("name") == null) {
 			return "redirect:/adminLogin";
 		}
-		return "views/banking";
+		return "Admin/banking";
 	}
 
 	@RequestMapping("deposit")
@@ -380,7 +380,7 @@ public class AdminController {
 			String msg = "Hii :" + customer.getAccno() + " Invalid A/c no.";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("withdraw")
@@ -420,7 +420,7 @@ public class AdminController {
 			String msg = "Hii :" + customer.getAccno() + " Invalid A/c no.";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("checkBalance")
@@ -436,7 +436,7 @@ public class AdminController {
 			model.addAttribute("cust", bal);
 		}
 
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("deleteByAccno")
@@ -453,12 +453,12 @@ public class AdminController {
 				System.out.println(mes);
 				model.addAttribute("cust", mes);
 			}
-			return "views/customerAccountDetails";
+			return "Admin/customerAccountDetails";
 		} else {
 			String msg = "Hii : Invalid A/c no.";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("edit")
@@ -468,7 +468,7 @@ public class AdminController {
 		}
 		List<Customer> acList = custRepo.findByAccno(accno);
 		model.addAttribute("cust", acList);
-		return "views/editCustomerDetails";
+		return "Admin/editCustomerDetails";
 	}
 
 	@RequestMapping("editCustomerDetail")
@@ -481,7 +481,7 @@ public class AdminController {
 			custRepo.saveAndFlush(customer);
 			model.addAttribute("cust", customer);
 			custRepo.flush();
-			return "views/customerEditList";
+			return "Admin/customerEditList";
 		} else if (impl.isAccExists(customer.getAccno()) == false) {
 			String mes = customer.getAccno() + " already exists! plz Wait...";
 			System.out.println(mes);
@@ -490,7 +490,7 @@ public class AdminController {
 			String mes = "Try with new Mobile No.. " + customer.getMobile() + " already exists!";
 			model.addAttribute("cust", mes);
 		}
-		return "views/customerAccountDetails";
+		return "Admin/customerAccountDetails";
 	}
 
 	@RequestMapping("delete")
@@ -505,4 +505,15 @@ public class AdminController {
 		model.addAttribute("cust", mes);
 		return "redirect:/showAllCustomers";
 	}
+	
+	@RequestMapping("viewPassbook")
+	private String checkCustomerStatement(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
+		List<IndividualCustomer> list=trxRepo.findByAccNo(customer.getAccno());
+		model.addAttribute("cust", list);
+		return "Admin/customerPassbook";
+	}
+	
 }

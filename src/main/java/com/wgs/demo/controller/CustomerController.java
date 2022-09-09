@@ -32,7 +32,7 @@ public class CustomerController {
 	
 	@RequestMapping("customerLogin")
 	private String customerLogin() {
-		return "views/customerLogin";
+		return "Customer/customerLogin";
 	}
 
 	@RequestMapping("custAuth")
@@ -56,7 +56,7 @@ public class CustomerController {
 			return "redirect:/customerLogin";
 		}
 		model.addAttribute("name", userName);
-		return "views/customer";
+		return "Customer/customer";
 	}
 
 	@RequestMapping("checkAccountStatement")
@@ -67,17 +67,17 @@ public class CustomerController {
 		int accNo=(int) session.getAttribute("custAccno");
 		List<IndividualCustomer> list=trxRepo.findByAccNo(accNo);
 		model.addAttribute("cust", list);
-		return "views/custAccStmt";
+		return "Customer/custAccStmt";
 	}
 
 	@RequestMapping("customerHelp")
 	public String custHelp() {
-		return "views/custHelp";
+		return "Customer/custHelp";
 	}
 
 	@RequestMapping("/forgetCustPass&Mail")
 	private String forgetCustUidAndPass() {
-		return "views/forgetCustDetails";
+		return "Customer/forgetCustDetails";
 	}
 
 	@RequestMapping("resetCustPass")
@@ -85,12 +85,12 @@ public class CustomerController {
 		List<Customer> list = impl.findMailAndMobile(email, mobile);
 		if (list.size() != 0) {
 			model.addAttribute("cust", list);
-			return "views/resetCustPass";
+			return "Customer/resetCustPass";
 		} else {
 			String msg = "Hi " + email + " Mobile_no " + mobile + " No Details Found !";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerDetails";
+		return "Customer/customerDetails";
 	}
 
 	@RequestMapping("resetCustMail")
@@ -104,14 +104,14 @@ public class CustomerController {
 			String msg = "Hi !" + name + " Mobile_no " + mobile + " No Details Found !";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerDetails";
+		return "Customer/customerDetails";
 	}
 
 	@RequestMapping("updateCustPass")
 	private String updatePass(Model model, Customer customer) {
 		custRepo.saveAndFlush(customer);
 		model.addAttribute("cust", customer.getPass());
-		return "views/customerDetails";
+		return "Customer/customerDetails";
 	}
 
 	@RequestMapping("/custLogout")
@@ -127,7 +127,7 @@ public class CustomerController {
 			return "redirect:/customerLogin";
 		}
 		model.addAttribute("accno", session.getAttribute("custAccno"));
-		return "views/custBanking";
+		return "Customer/custBanking";
 	}
 
 	@RequestMapping("custWithdraw")
@@ -167,7 +167,7 @@ public class CustomerController {
 			String msg = "Hii :" + customer.getAccno() + " Invalid A/c no.";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerDetails";
+		return "Customer/customerDetails";
 	}
 
 	@RequestMapping("custCheckBalance")
@@ -183,7 +183,7 @@ public class CustomerController {
 			model.addAttribute("cust", bal);
 		}
 
-		return "views/customerDetails";
+		return "Customer/customerDetails";
 	}
 
 	@RequestMapping("custDeposit")
@@ -219,7 +219,7 @@ public class CustomerController {
 			String msg = "Hii :" + customer.getAccno() + " Invalid A/c no.";
 			model.addAttribute("cust", msg);
 		}
-		return "views/customerDetails";
+		return "Customer/customerDetails";
 	}
 	
 	@RequestMapping("custEdit")
@@ -230,7 +230,7 @@ public class CustomerController {
 		int accNo=(int) session.getAttribute("custAccno");
 		List<Customer> acList = custRepo.findByAccno(accNo);
 		model.addAttribute("cust", acList);
-		return "views/editCustDetails";
+		return "Customer/editCustDetails";
 	}
 
 	@RequestMapping("editCustDetail")
@@ -243,7 +243,7 @@ public class CustomerController {
 			custRepo.saveAndFlush(customer);
 			model.addAttribute("cust", customer);
 			custRepo.flush();
-			return "views/custEditList";
+			return "Customer/custEditList";
 		} else if (impl.isAccExists(customer.getAccno()) == false) {
 			String mes = customer.getAccno() + " already exists! plz Wait...";
 			System.out.println(mes);
@@ -252,7 +252,7 @@ public class CustomerController {
 			String mes = "Try with new Mobile No.. " + customer.getMobile() + " already exists!";
 			model.addAttribute("cust", mes);
 		}
-		return "views/customerDetails";
+		return "Customer/customerDetails";
 	}
 	
 }
