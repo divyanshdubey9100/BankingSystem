@@ -34,17 +34,6 @@ public class AdminController {
 	@Autowired
 	IndividualTrxRepo trxRepo;
 
-	@RequestMapping("admin")
-	private String adminUi(Model model, HttpSession session) {
-		Object userName = session.getAttribute("name");
-		if (userName == null) {
-			return "redirect:/adminLogin";
-		}
-
-		model.addAttribute("name", userName);
-		return "Admin/Admin";
-	}
-
 	@RequestMapping("adminLogin")
 	private String adminLogin() {
 		return "Admin/adminLogin";
@@ -54,6 +43,16 @@ public class AdminController {
 	private String logout(HttpSession session) {
 		session.removeAttribute("name");
 		return "redirect:/adminLogin";
+	}
+
+	@RequestMapping("admin")
+	private String adminUi(Model model, HttpSession session) {
+		Object userName = session.getAttribute("name");
+		if (userName == null) {
+			return "redirect:/adminLogin";
+		}
+		model.addAttribute("name", userName);
+		return "Admin/Admin";
 	}
 
 	@RequestMapping("adminAuth")
@@ -71,16 +70,24 @@ public class AdminController {
 	}
 
 	@RequestMapping("registerAdmin")
-	private String registerAdmin() {
+	private String registerAdmin(HttpSession session) {
+		Object userName = session.getAttribute("ownName");
+		if (userName == null) {
+			return "redirect:/ownLogin";
+		}
 		return "Admin/createAdminAcc";
 	}
 
 	@RequestMapping("createAdminAcc")
-	private String createAdminAcc(AdminReg admin, Model model) {
+	private String createAdminAcc(AdminReg admin, Model model,HttpSession session) {
+		Object userName = session.getAttribute("ownName");
+		if (userName == null) {
+			return "redirect:/ownLogin";
+		}
 		if (adminImpl.isUserIdExists(admin.getUserId()) == false
 				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
 			AdminReg adList = adminRepo.save(admin);
-			String mes=adList+" created Successfully!";
+			String mes = adList + " created Successfully!";
 			model.addAttribute("cust", mes);
 		} else if (adminImpl.isUserIdExists(admin.getUserId()) == true) {
 			String mes = admin.getUserId() + " Already Exists";
@@ -348,7 +355,7 @@ public class AdminController {
 	}
 
 	@RequestMapping("deposit")
-	private String deposit(Customer customer, Model model, HttpSession session,IndividualCustomer indivCust) {
+	private String deposit(Customer customer, Model model, HttpSession session, IndividualCustomer indivCust) {
 		if (session.getAttribute("name") == null) {
 			return "redirect:/adminLogin";
 		}
@@ -356,8 +363,9 @@ public class AdminController {
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 			for (Customer cust : custList) {
 				if (impl.isAccExists(customer.getAccno()) == true) {
-					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss").format(Calendar.getInstance().getTime());
-					int trxId=1+impl.trxIdGen(customer.getAccno());
+					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss")
+							.format(Calendar.getInstance().getTime());
+					int trxId = 1 + impl.trxIdGen(customer.getAccno());
 					indivCust.setTrxId(trxId);
 					indivCust.setCustName(cust.getName());
 					indivCust.setAccNo(cust.getAccno());
@@ -384,7 +392,7 @@ public class AdminController {
 	}
 
 	@RequestMapping("withdraw")
-	private String withdraw(Customer customer, Model model, HttpSession session,IndividualCustomer indivCust) {
+	private String withdraw(Customer customer, Model model, HttpSession session, IndividualCustomer indivCust) {
 		if (session.getAttribute("name") == null) {
 			return "redirect:/adminLogin";
 		}
@@ -392,13 +400,14 @@ public class AdminController {
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 			for (Customer cust : custList) {
 				if ((cust.getBalance() - customer.getBalance()) > 1000 && cust.getBalance() > customer.getBalance()) {
-					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss").format(Calendar.getInstance().getTime());
-					int trxId=1+impl.trxIdGen(customer.getAccno());
+					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss")
+							.format(Calendar.getInstance().getTime());
+					int trxId = 1 + impl.trxIdGen(customer.getAccno());
 					indivCust.setTrxId(trxId);
 					indivCust.setCustName(cust.getName());
 					indivCust.setAccNo(cust.getAccno());
 					indivCust.setAmtBefTrx(cust.getBalance());
-					indivCust.setTrxAmt(customer.getBalance());					
+					indivCust.setTrxAmt(customer.getBalance());
 					int newAmount = cust.getBalance() - customer.getBalance();
 					indivCust.setCurrentBalance(newAmount);
 					indivCust.setTrxDate(timeStamp);
@@ -505,15 +514,15 @@ public class AdminController {
 		model.addAttribute("cust", mes);
 		return "redirect:/showAllCustomers";
 	}
-	
+
 	@RequestMapping("viewPassbook")
 	private String checkCustomerStatement(Customer customer, Model model, HttpSession session) {
 		if (session.getAttribute("name") == null) {
 			return "redirect:/adminLogin";
 		}
-		List<IndividualCustomer> list=trxRepo.findByAccNo(customer.getAccno());
+		List<IndividualCustomer> list = trxRepo.findByAccNo(customer.getAccno());
 		model.addAttribute("cust", list);
 		return "Admin/customerPassbook";
 	}
-	
+
 }
