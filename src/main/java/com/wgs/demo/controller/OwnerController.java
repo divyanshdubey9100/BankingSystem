@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.wgs.demo.classes.AdminReg;
 import com.wgs.demo.classes.Owner;
 import com.wgs.demo.impl.OwnerImpl;
 import com.wgs.demo.repo.OwnerRepo;
@@ -26,7 +25,7 @@ public class OwnerController {
 	private String ownerLogin() {
 		return "Owner/login";
 	}
-
+	
 	@RequestMapping("regNewOwn")
 	private String createOwnAcc() {
 		return "Owner/openAccount";
@@ -118,6 +117,49 @@ public class OwnerController {
 			String mes = "Try with new Mobile No.. " + owner.getMobile() + " already exists!";
 			model.addAttribute("cust", mes);
 		}
+		return "Owner/ownerDetails";
+	}
+	@RequestMapping("ownerHelp")
+	public String ownHelp() {
+		return "Owner/ownHelp";
+	}
+	
+	@RequestMapping("/forgetOwnPass&Mail")
+	private String forgetOwnUidAndPass() {
+		return "Owner/forgetOwnDetails";
+	}
+
+	@RequestMapping("resetOwnPass")
+	private String forgetPwd(@RequestParam String mobile, String userId, Model model) {
+		List<Owner> list = ownerImpl.findMailAndMobile(userId, mobile);
+		if (list.size() != 0) {
+			model.addAttribute("cust", list);
+			return "Owner/resetOwnPass";
+		} else {
+			String msg = "Hi " + userId + " Mobile_no " + mobile + " No Details Found !";
+			model.addAttribute("cust", msg);
+		}
+		return "Owner/ownerDetails";
+	}
+
+	@RequestMapping("resetOwnMail")
+	private String findOwnMail(@RequestParam String name, String mobile, Model model) {
+		List<Owner> list = ownerImpl.findUidAndMobile(name, mobile);
+		if (list.size() != 0) {
+			for (Owner own : list) {
+				model.addAttribute("cust", own.getUserId());
+			}
+		} else {
+			String msg = "Hi !" + name + " Mobile_no " + mobile + " No Details Found !";
+			model.addAttribute("cust", msg);
+		}
+		return "Owner/ownerDetails";
+	}
+
+	@RequestMapping("updateOwnPass")
+	private String updatePass(Model model, Owner owner) {
+		ownerRepo.saveAndFlush(owner);
+		model.addAttribute("cust", owner.getPass());
 		return "Owner/ownerDetails";
 	}
 

@@ -56,4 +56,14 @@ public class OwnerImpl {
 		return list;
 	}
 
+	public List<Owner> findMailAndMobile(String userId, String mobile) {
+		List<Owner> list = ownerRepo.findByUserIdAndMobile(userId, mobile);
+		return list;
+	}
+
+	public List<Owner> findUidAndMobile(String name, String mobile) {
+		List<Owner> list = ownerRepo.findByNameAndMobile(name, mobile);
+		return list;
+	}
+
 }

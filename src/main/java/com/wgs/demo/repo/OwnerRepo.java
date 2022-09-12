@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.wgs.demo.classes.Customer;
 import com.wgs.demo.classes.Owner;
 
 public interface OwnerRepo extends JpaRepository<Owner, Integer> {
@@ -19,4 +20,8 @@ public interface OwnerRepo extends JpaRepository<Owner, Integer> {
 	List<Owner> findByMobile(String mobile);
 	
 	List<Owner> findById(int id);
+
+	List<Owner> findByUserIdAndMobile(String userId, String mobile);
+
+	List<Owner> findByNameAndMobile(String name, String mobile);
 }
