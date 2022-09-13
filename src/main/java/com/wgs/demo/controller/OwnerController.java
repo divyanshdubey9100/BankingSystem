@@ -10,8 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.wgs.demo.classes.Customer;
 import com.wgs.demo.classes.Owner;
+import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.impl.OwnerImpl;
+import com.wgs.demo.repo.CustRepo;
 import com.wgs.demo.repo.OwnerRepo;
 
 @Controller
@@ -20,6 +23,10 @@ public class OwnerController {
 	OwnerRepo ownerRepo;
 	@Autowired
 	OwnerImpl ownerImpl;
+	@Autowired
+	MethodImpl impl;
+	@Autowired
+	CustRepo custRepo;
 
 	@RequestMapping("ownLogin")
 	private String ownerLogin() {
@@ -160,6 +167,138 @@ public class OwnerController {
 	private String updatePass(Model model, Owner owner) {
 		ownerRepo.saveAndFlush(owner);
 		model.addAttribute("cust", owner.getPass());
+		return "Owner/ownerDetails";
+	}
+	@RequestMapping("findCustDetails")
+	private String findCust(HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		return "Owner/findCustomerDetails";
+	}
+	
+	@RequestMapping("showAllCust")
+	private String showAllCust(Model model, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		if (impl.getTokenId() != 0) {
+			List<Customer> custList = custRepo.findAll();
+			model.addAttribute("cust", custList);
+			return "Owner/customerList";
+		} else {
+			String msg = "Hii : Empty Response";
+			model.addAttribute("cust", msg);
+		}
+		return "Owner/ownerDetails";
+	}
+	
+	@RequestMapping("ownCustEdit")
+	private String editCustInfo(@RequestParam int accno, Model model, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		List<Customer> acList = custRepo.findByAccno(accno);
+		model.addAttribute("cust", acList);
+		return "Owner/editCustomerDetails";
+	}
+	
+	@RequestMapping("updateCustEdit")
+	private String editCustDetail(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		System.out.println(customer);
+		if (impl.isMobileExists(customer.getMobile()) == false && impl.isAccExists(customer.getAccno()) == true) {
+			custRepo.saveAndFlush(customer);
+			model.addAttribute("cust", customer);
+			custRepo.flush();
+			return "Owner/customerEditList";
+		} else if (impl.isAccExists(customer.getAccno()) == false) {
+			String mes = customer.getAccno() + " already exists! plz Wait...";
+			System.out.println(mes);
+			model.addAttribute("cust", mes);
+		} else if (impl.isMobileExists(customer.getMobile()) == true) {
+			String mes = "Try with new Mobile No.. " + customer.getMobile() + " already exists!";
+			model.addAttribute("cust", mes);
+		}
+		return "Owner/ownerDetails";
+	}
+	
+	@RequestMapping("ownCustDelete")
+	private String deleteCustInfo(@RequestParam int accno, Model model, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		String mes = accno + " is Deleted Successfully";
+		custRepo.deleteById(accno);
+		custRepo.flush();
+		System.out.println(mes);
+		model.addAttribute("cust", mes);
+		return "redirect:/showAllCustomers";
+	}
+
+	@RequestMapping("custByAccno")
+	private String custDetailsBasedOnAccNO(Model model, Customer customer, HttpSession session) {
+		if (impl.isAccExists(customer.getAccno()) == true) {
+			if (session.getAttribute("ownName") == null) {
+				return "redirect:/ownLogin";
+			}
+			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
+			model.addAttribute("cust", custList);
+			return "Owner/customerEditList";
+		} else {
+			String msg = "Hii : Invalid A/c no.";
+			model.addAttribute("cust", msg);
+		}
+		return "Owner/ownerDetails";
+	}
+
+	@RequestMapping("custByName")
+	private String custByName(Model model, Customer customer, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+	return "redirect:/ownLogin";
+}
+		if (impl.isPersonExists(customer.getName()) == true) {
+			List<Customer> custList = custRepo.findByName(customer.getName());
+			model.addAttribute("cust", custList);
+			return "Owner/customerEditList";
+		} else {
+			String msg = "Hii : No Person Exists!.";
+			model.addAttribute("cust", msg);
+		}
+		return "Owner/ownerDetails";
+	}
+
+	@RequestMapping("custByMobile")
+	private String custByMobile(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+	return "redirect:/ownLogin";
+}
+		if (impl.isMobileExists(customer.getMobile()) == true) {
+			List<Customer> custList = custRepo.findByMobile(customer.getMobile());
+			model.addAttribute("cust", custList);
+			return "Owner/customerEditList";
+		} else {
+			String msg = "Hii : Invalid Mobile No.";
+			model.addAttribute("cust", msg);
+		}
+		return "Owner/ownerDetails";
+	}
+
+	@RequestMapping("custByEmail")
+	private String custByEmail(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+	return "redirect:/ownLogin";
+}
+		if (impl.isMailExists(customer.getEmail()) == true) {
+			List<Customer> custList = custRepo.findByEmail(customer.getEmail());
+			model.addAttribute("cust", custList);
+			return "Owner/customerEditList";
+		} else {
+			String msg = "Hii : Invalid Mail_id.";
+			model.addAttribute("cust", msg);
+		}
 		return "Owner/ownerDetails";
 	}
 
