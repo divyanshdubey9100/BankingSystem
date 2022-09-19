@@ -75,7 +75,7 @@ public class AdminController {
 		if (userName == null) {
 			return "redirect:/ownLogin";
 		}
-		return "Admin/createAdminAcc";
+		return "Owner/createAdminAcc";
 	}
 
 	@RequestMapping("createAdminAcc")
