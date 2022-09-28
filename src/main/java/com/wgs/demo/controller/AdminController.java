@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wgs.demo.classes.AdminReg;
+import com.wgs.demo.classes.AdminRegReq;
 import com.wgs.demo.classes.Customer;
 import com.wgs.demo.classes.IndividualCustomer;
 import com.wgs.demo.impl.AdminImpl;
 import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.repo.AdminRegRepo;
+import com.wgs.demo.repo.AdminRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
 import com.wgs.demo.repo.IndividualTrxRepo;
 
@@ -25,6 +27,8 @@ import com.wgs.demo.repo.IndividualTrxRepo;
 public class AdminController {
 	@Autowired
 	AdminRegRepo adminRepo;
+	@Autowired
+	AdminRegReqRepo adminReqRepo;
 	@Autowired
 	CustRepo custRepo;
 	@Autowired
@@ -523,6 +527,26 @@ public class AdminController {
 		List<IndividualCustomer> list = trxRepo.findByAccNo(customer.getAccno());
 		model.addAttribute("cust", list);
 		return "Admin/customerPassbook";
+	}
+	@RequestMapping("reqAdminAcc")
+	private String requestAdminAcc() {
+		return "Admin/createAdminAcc";
+	}
+	@RequestMapping("createAdminAccReq")
+	private String reqAdminAcc(AdminRegReq adminReq, Model model) {
+		if (adminImpl.isUserIdExists(adminReq.getUserId()) == false
+				&& adminImpl.isMobileExists(adminReq.getMobile()) == false) {
+			AdminRegReq adReq = adminReqRepo.save(adminReq);
+			String mes = adReq + " created Successfully!";
+			model.addAttribute("cust", mes);
+		} else if (adminImpl.isUserIdExists(adminReq.getUserId()) == true) {
+			String mes = adminReq.getUserId() + " Already Exists";
+			model.addAttribute("cust", mes);
+		} else if (adminImpl.isMobileExists(adminReq.getMobile()) == true) {
+			String mes = adminReq.getMobile() + " Already Exists";
+			model.addAttribute("cust", mes);
+		}
+		return "Admin/customerAccountDetails";
 	}
 
 }

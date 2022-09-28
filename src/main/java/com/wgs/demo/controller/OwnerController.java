@@ -13,13 +13,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wgs.demo.classes.AdminReg;
+import com.wgs.demo.classes.AdminRegReq;
 import com.wgs.demo.classes.Customer;
 import com.wgs.demo.classes.IndividualCustomer;
 import com.wgs.demo.classes.Owner;
 import com.wgs.demo.impl.AdminImpl;
+import com.wgs.demo.impl.AdminReqImpl;
 import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.impl.OwnerImpl;
 import com.wgs.demo.repo.AdminRegRepo;
+import com.wgs.demo.repo.AdminRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
 import com.wgs.demo.repo.IndividualTrxRepo;
 import com.wgs.demo.repo.OwnerRepo;
@@ -40,6 +43,10 @@ public class OwnerController {
 	AdminRegRepo adminRepo;
 	@Autowired
 	OwnerRepo ownerRepo;
+	@Autowired
+	AdminReqImpl reqImpl;
+	@Autowired
+	AdminRegReqRepo reqRepo;
 
 	@RequestMapping("ownLogin")
 	private String ownerLogin() {
@@ -456,7 +463,7 @@ public class OwnerController {
 		}
 		return "Owner/findAdminDetail";
 	}
-	
+
 	@RequestMapping("showAllAdminByOwn")
 	private String showAllAdminByOwn(Model model, HttpSession session) {
 		if (session.getAttribute("ownName") == null) {
@@ -517,7 +524,7 @@ public class OwnerController {
 		}
 		return "Owner/ownerDetails";
 	}
-	  
+
 	@RequestMapping("openCustAccount")
 	private String openCustAccount(HttpSession session) {
 		if (session.getAttribute("ownName") == null) {
@@ -562,6 +569,71 @@ public class OwnerController {
 		}
 		return "Owner/ownerDetails";
 	}
- 
 
+	@RequestMapping("ownReq")
+	private String checkRequestStatus(HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		return "Owner/request";
+	}
+
+	@RequestMapping("chkAdminReq")
+	private String checkAdminReq(Model model, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		model.addAttribute("cust", reqImpl.findAllReq());
+		return "Owner/showReq";
+	}
+
+	
+
+	@RequestMapping("acceptReq")
+	private String acceptReq(AdminReg admin, Model model, HttpSession session) {
+		Object userName = session.getAttribute("ownName");
+		if (userName == null) {
+			return "redirect:/ownLogin";
+		}
+		if (adminImpl.isUserIdExists(admin.getUserId()) == false
+				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
+			AdminReg adList = adminRepo.save(admin);
+			adminRepo.flush();
+			reqRepo.deleteById(admin.getId());
+			reqRepo.flush();
+			String mes = adList + " created Successfully!";
+			model.addAttribute("cust", mes);
+		} else if (adminImpl.isUserIdExists(admin.getUserId()) == true) {
+			String mes = admin.getUserId() + " Already Exists";
+			reqRepo.deleteByMobile(admin.getMobile());
+			reqRepo.flush();
+			model.addAttribute("cust", mes);
+		} else if (adminImpl.isMobileExists(admin.getMobile()) == true) {
+			String mes = admin.getMobile() + " Already Exists";
+			reqRepo.deleteByMobile(admin.getMobile());
+			reqRepo.flush();
+			model.addAttribute("cust", mes);
+		}
+		return "Owner/ownerDetails";
+	}
+
+	@RequestMapping("delAdminReq")
+	private String deleteAdminRequest(HttpSession session, @RequestParam int id, Model model) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		reqRepo.deleteById(id);
+		reqRepo.flush();
+		String msg = " Admin A/c Request Denied";
+		model.addAttribute("cust", msg);
+		return "redirect:/chkAdminReq";
+	}
+	
+	@RequestMapping("chkCustReq")
+	private String checkCustReq(Model model, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		return "Owner/showReq";
+	}
 }
