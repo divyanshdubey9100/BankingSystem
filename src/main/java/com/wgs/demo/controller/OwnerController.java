@@ -13,16 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wgs.demo.classes.AdminReg;
-import com.wgs.demo.classes.AdminRegReq;
 import com.wgs.demo.classes.Customer;
+import com.wgs.demo.classes.CustomerReqReq;
 import com.wgs.demo.classes.IndividualCustomer;
 import com.wgs.demo.classes.Owner;
 import com.wgs.demo.impl.AdminImpl;
 import com.wgs.demo.impl.AdminReqImpl;
+import com.wgs.demo.impl.CustReqImpl;
 import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.impl.OwnerImpl;
 import com.wgs.demo.repo.AdminRegRepo;
 import com.wgs.demo.repo.AdminRegReqRepo;
+import com.wgs.demo.repo.CustRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
 import com.wgs.demo.repo.IndividualTrxRepo;
 import com.wgs.demo.repo.OwnerRepo;
@@ -36,6 +38,8 @@ public class OwnerController {
 	@Autowired
 	AdminImpl adminImpl;
 	@Autowired
+	CustReqImpl custReqImpl;
+	@Autowired
 	CustRepo custRepo;
 	@Autowired
 	IndividualTrxRepo trxRepo;
@@ -47,6 +51,8 @@ public class OwnerController {
 	AdminReqImpl reqImpl;
 	@Autowired
 	AdminRegReqRepo reqRepo;
+	@Autowired
+	CustRegReqRepo custRegReqRepo;
 
 	@RequestMapping("ownLogin")
 	private String ownerLogin() {
@@ -584,12 +590,23 @@ public class OwnerController {
 			return "redirect:/ownLogin";
 		}
 		model.addAttribute("cust", reqImpl.findAllReq());
-		return "Owner/showReq";
+		return "Owner/showAdminReq";
 	}
 
-	
+	@RequestMapping("cnfrmAdminReq")
+	private String confirmReq(AdminReg admin, Model model, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		model.addAttribute("cust", admin);
+		String msg = admin + "Record Deleted";
+		reqRepo.deleteById(admin.getId());
+		reqRepo.flush();
+		System.out.println(msg);
+		return "Owner/cnfrmAdminReq";
+	}
 
-	@RequestMapping("acceptReq")
+	@RequestMapping("acceptAdminReq")
 	private String acceptReq(AdminReg admin, Model model, HttpSession session) {
 		Object userName = session.getAttribute("ownName");
 		if (userName == null) {
@@ -599,8 +616,6 @@ public class OwnerController {
 				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
 			AdminReg adList = adminRepo.save(admin);
 			adminRepo.flush();
-			reqRepo.deleteById(admin.getId());
-			reqRepo.flush();
 			String mes = adList + " created Successfully!";
 			model.addAttribute("cust", mes);
 		} else if (adminImpl.isUserIdExists(admin.getUserId()) == true) {
@@ -628,12 +643,52 @@ public class OwnerController {
 		model.addAttribute("cust", msg);
 		return "redirect:/chkAdminReq";
 	}
-	
+
 	@RequestMapping("chkCustReq")
 	private String checkCustReq(Model model, HttpSession session) {
 		if (session.getAttribute("ownName") == null) {
 			return "redirect:/ownLogin";
 		}
-		return "Owner/showReq";
+		model.addAttribute("cust", custReqImpl.findAllReq());
+		return "Owner/showCustReq";
+	}
+
+	@RequestMapping("acceptCustReq")
+	private String acceptCustomerRequest(Customer customer, Model model, HttpSession session) {
+		try {
+			if (customer.getBalance() >= 1000 && impl.isAccExists(customer.getAccno()) == false
+					&& impl.isMobileExists(customer.getMobile()) == false
+					&& impl.isMailExists(customer.getEmail()) == false) {
+				custRepo.save(customer);
+				custRegReqRepo.deleteById(customer.getAccno());
+				reqRepo.flush();
+				model.addAttribute("cust", "Account Created Successfully.." + customer);
+			} else if (impl.isAccExists(customer.getAccno()) == true) {
+				String mes = customer.getAccno() + " already exists! plz Wait...";
+				System.out.println(mes);
+				model.addAttribute("cust", mes);
+			} else if (reqImpl.isMobileExists(customer.getMobile()) == true) {
+				String mes = "Try with new Mobile No.. " + customer.getMobile() + " already exists!";
+				model.addAttribute("cust", mes);
+			} else if (impl.isMailExists(customer.getEmail()) == true) {
+				String mes = "Try with new Mobile No.. " + customer.getEmail() + " already exists!";
+				model.addAttribute("cust", mes);
+			}
+		} catch (Exception e) {
+			System.out.println(e + " err hai err");
+		}
+		return "Owner/ownerDetails";
+	}
+
+	@RequestMapping("delCustReq")
+	private String deleteCustomerRequest(HttpSession session,Customer customer, Model model) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		custRegReqRepo.deleteById(customer.getAccno());
+		reqRepo.flush();
+		String msg = " Customer A/c Request Denied";
+		model.addAttribute("cust", msg);
+		return "redirect:/chkCustReq";
 	}
 }

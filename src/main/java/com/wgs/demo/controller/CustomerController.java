@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wgs.demo.classes.Customer;
+import com.wgs.demo.classes.CustomerReqReq;
 import com.wgs.demo.classes.IndividualCustomer;
+import com.wgs.demo.impl.CustReqImpl;
 import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.repo.AdminRegRepo;
+import com.wgs.demo.repo.CustRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
 import com.wgs.demo.repo.IndividualTrxRepo;
 
@@ -28,7 +31,11 @@ public class CustomerController {
 	@Autowired
 	MethodImpl impl;
 	@Autowired
+	CustReqImpl reqImpl;
+	@Autowired
 	IndividualTrxRepo trxRepo;
+	@Autowired
+	CustRegReqRepo reqRepo;
 	
 	@RequestMapping("customerLogin")
 	private String customerLogin() {
@@ -250,6 +257,43 @@ public class CustomerController {
 		} else if (impl.isMobileExists(customer.getMobile()) == true) {
 			String mes = "Try with new Mobile No.. " + customer.getMobile() + " already exists!";
 			model.addAttribute("cust", mes);
+		}
+		return "Customer/customerDetails";
+	}
+	@RequestMapping("/custAccReq")
+	private String custAccReqForm() {
+		return "Customer/openCustomerAccount";
+	}
+	@RequestMapping("submitCustAccReq")
+	private String submitCustomerAccReq(CustomerReqReq custReq, Model model, HttpSession session) {
+		int accno = 1000 + reqImpl.getTokenId();
+		try {
+			for (int i = 0; i <= reqImpl.getTokenId(); i++) {
+				accno++;
+				if (custReq.getBalance() >= 1000 && reqImpl.isAccExists(accno) == false
+						&& reqImpl.isMobileExists(custReq.getMobile()) == false
+						&& reqImpl.isMailExists(custReq.getEmail()) == false) {
+					custReq.setAccno(accno);
+					reqRepo.save(custReq);
+					model.addAttribute("cust", custReq+ "Request Submitted Successfully..");
+					break;
+				} else if (reqImpl.isAccExists(accno) == true) {
+					String mes = accno + " already exists! plz Wait...";
+					System.out.println(mes);
+					model.addAttribute("cust", mes);
+					continue;
+				} else if (reqImpl.isMobileExists(custReq.getMobile()) == true) {
+					String mes = "Try with new Mobile No.. " + custReq.getMobile() + " already exists!";
+					model.addAttribute("cust", mes);
+					break;
+				} else if (impl.isMailExists(custReq.getEmail()) == true) {
+					String mes = "Try with new Mobile No.. " + custReq.getEmail() + " already exists!";
+					model.addAttribute("cust", mes);
+					break;
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e + " err hai err");
 		}
 		return "Customer/customerDetails";
 	}

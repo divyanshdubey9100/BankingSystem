@@ -537,7 +537,7 @@ public class AdminController {
 		if (adminImpl.isUserIdExists(adminReq.getUserId()) == false
 				&& adminImpl.isMobileExists(adminReq.getMobile()) == false) {
 			AdminRegReq adReq = adminReqRepo.save(adminReq);
-			String mes = adReq + " created Successfully!";
+			String mes = adReq +"<br>Request Submitted Successfully..";
 			model.addAttribute("cust", mes);
 		} else if (adminImpl.isUserIdExists(adminReq.getUserId()) == true) {
 			String mes = adminReq.getUserId() + " Already Exists";
