@@ -655,6 +655,9 @@ public class OwnerController {
 
 	@RequestMapping("acceptCustReq")
 	private String acceptCustomerRequest(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
 		try {
 			if (customer.getBalance() >= 1000 && impl.isAccExists(customer.getAccno()) == false
 					&& impl.isMobileExists(customer.getMobile()) == false
@@ -667,7 +670,7 @@ public class OwnerController {
 				String mes = customer.getAccno() + " already exists! plz Wait...";
 				System.out.println(mes);
 				model.addAttribute("cust", mes);
-			} else if (reqImpl.isMobileExists(customer.getMobile()) == true) {
+			} else if (impl.isMobileExists(customer.getMobile()) == true) {
 				String mes = "Try with new Mobile No.. " + customer.getMobile() + " already exists!";
 				model.addAttribute("cust", mes);
 			} else if (impl.isMailExists(customer.getEmail()) == true) {

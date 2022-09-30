@@ -17,9 +17,12 @@ import com.wgs.demo.classes.AdminRegReq;
 import com.wgs.demo.classes.Customer;
 import com.wgs.demo.classes.IndividualCustomer;
 import com.wgs.demo.impl.AdminImpl;
+import com.wgs.demo.impl.AdminReqImpl;
+import com.wgs.demo.impl.CustReqImpl;
 import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.repo.AdminRegRepo;
 import com.wgs.demo.repo.AdminRegReqRepo;
+import com.wgs.demo.repo.CustRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
 import com.wgs.demo.repo.IndividualTrxRepo;
 
@@ -37,6 +40,14 @@ public class AdminController {
 	AdminImpl adminImpl;
 	@Autowired
 	IndividualTrxRepo trxRepo;
+	@Autowired
+	CustReqImpl custReqImpl;
+	@Autowired
+	CustRegReqRepo custRegReqRepo;
+	@Autowired
+	AdminRegReqRepo reqRepo;
+//	@Autowired
+//	AdminReqImpl reqImpl;
 
 	@RequestMapping("adminLogin")
 	private String adminLogin() {
@@ -537,7 +548,7 @@ public class AdminController {
 		if (adminImpl.isUserIdExists(adminReq.getUserId()) == false
 				&& adminImpl.isMobileExists(adminReq.getMobile()) == false) {
 			AdminRegReq adReq = adminReqRepo.save(adminReq);
-			String mes = adReq +"<br>Request Submitted Successfully..";
+			String mes = adReq +"Request Submitted Successfully..";
 			model.addAttribute("cust", mes);
 		} else if (adminImpl.isUserIdExists(adminReq.getUserId()) == true) {
 			String mes = adminReq.getUserId() + " Already Exists";
@@ -547,6 +558,57 @@ public class AdminController {
 			model.addAttribute("cust", mes);
 		}
 		return "Admin/customerAccountDetails";
+	}
+
+	@RequestMapping("chkCustReqByAdmin")
+	private String checkCustReqByAdmin(Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
+		model.addAttribute("cust", custReqImpl.findAllReq());
+		return "Admin/showCustReq";
+	}
+
+	@RequestMapping("acceptCustReqByAdmin")
+	private String acceptCustomerRequestByAdmin(Customer customer, Model model, HttpSession session) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
+		try {
+			if (customer.getBalance() >= 1000 && impl.isAccExists(customer.getAccno()) == false
+					&& impl.isMobileExists(customer.getMobile()) == false
+					&& impl.isMailExists(customer.getEmail()) == false) {
+				custRepo.save(customer);
+				custRegReqRepo.deleteById(customer.getAccno());
+				reqRepo.flush();
+				model.addAttribute("cust", "Account Created Successfully.." + customer);
+			} else if (impl.isAccExists(customer.getAccno()) == true) {
+				String mes = customer.getAccno() + " already exists! plz Wait...";
+				System.out.println(mes);
+				model.addAttribute("cust", mes);
+			} else if (impl.isMobileExists(customer.getMobile()) == true) {
+				String mes = "Try with new Mobile No.. " + customer.getMobile() + " already exists!";
+				model.addAttribute("cust", mes);
+			} else if (impl.isMailExists(customer.getEmail()) == true) {
+				String mes = "Try with new Mobile No.. " + customer.getEmail() + " already exists!";
+				model.addAttribute("cust", mes);
+			}
+		} catch (Exception e) {
+			System.out.println(e + " err hai err");
+		}
+		return "Admin/customerAccountDetails";
+	}
+
+	@RequestMapping("delCustReqByAdmin")
+	private String deleteCustomerRequestByAdmin(HttpSession session,Customer customer, Model model) {
+		if (session.getAttribute("name") == null) {
+			return "redirect:/adminLogin";
+		}
+		custRegReqRepo.deleteById(customer.getAccno());
+		reqRepo.flush();
+		String msg = " Customer A/c Request Denied";
+		model.addAttribute("cust", msg);
+		return "redirect:/chkCustReq";
 	}
 
 }
