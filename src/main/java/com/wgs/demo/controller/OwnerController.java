@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wgs.demo.classes.AdminReg;
 import com.wgs.demo.classes.Customer;
-import com.wgs.demo.classes.CustomerReqReq;
 import com.wgs.demo.classes.IndividualCustomer;
 import com.wgs.demo.classes.Owner;
 import com.wgs.demo.impl.AdminImpl;
@@ -66,8 +65,8 @@ public class OwnerController {
 
 	@RequestMapping("regOwnAccount")
 	private String registerOwner(Owner owner, Model model) {
-		if (ownerImpl.isUserIdExists(owner.getUserId()) == false
-				&& ownerImpl.isMobileExists(owner.getMobile()) == false) {
+		if (ownerImpl.isUserIdExists(owner.getUserId()) == false && ownerImpl.isMobileExists(owner.getMobile()) == false
+				&& ownerImpl.getTokenId() == 0) {
 			Owner own = ownerRepo.save(owner);
 			String mes = own + " created Successfully!";
 			model.addAttribute("cust", mes);
@@ -76,6 +75,9 @@ public class OwnerController {
 			model.addAttribute("cust", mes);
 		} else if (ownerImpl.isMobileExists(owner.getMobile()) == true) {
 			String mes = owner.getMobile() + " Already Exists";
+			model.addAttribute("cust", mes);
+		} else if (ownerImpl.getTokenId() != 0) {
+			String mes = ownerImpl.getTokenId() + " Users Already Exists";
 			model.addAttribute("cust", mes);
 		}
 		return "Owner/ownerDetails";
@@ -576,14 +578,6 @@ public class OwnerController {
 		return "Owner/ownerDetails";
 	}
 
-	@RequestMapping("ownReq")
-	private String checkRequestStatus(HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
-			return "redirect:/ownLogin";
-		}
-		return "Owner/request";
-	}
-
 	@RequestMapping("chkAdminReq")
 	private String checkAdminReq(Model model, HttpSession session) {
 		if (session.getAttribute("ownName") == null) {
@@ -684,7 +678,7 @@ public class OwnerController {
 	}
 
 	@RequestMapping("delCustReq")
-	private String deleteCustomerRequest(HttpSession session,Customer customer, Model model) {
+	private String deleteCustomerRequest(HttpSession session, Customer customer, Model model) {
 		if (session.getAttribute("ownName") == null) {
 			return "redirect:/ownLogin";
 		}

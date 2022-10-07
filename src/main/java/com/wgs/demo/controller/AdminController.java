@@ -17,7 +17,6 @@ import com.wgs.demo.classes.AdminRegReq;
 import com.wgs.demo.classes.Customer;
 import com.wgs.demo.classes.IndividualCustomer;
 import com.wgs.demo.impl.AdminImpl;
-import com.wgs.demo.impl.AdminReqImpl;
 import com.wgs.demo.impl.CustReqImpl;
 import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.repo.AdminRegRepo;
