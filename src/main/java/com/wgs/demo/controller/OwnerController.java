@@ -337,7 +337,11 @@ public class OwnerController {
 		if (session.getAttribute("ownName") == null) {
 			return "redirect:/ownLogin";
 		}
-		return "Owner/banking";
+		return "Owner/custBanking";
+	}
+	@RequestMapping("custOperateionsByOwn")
+	private String custOperations() {
+		return "Owner/custOperations";
 	}
 
 	@RequestMapping("ownDeposit")
