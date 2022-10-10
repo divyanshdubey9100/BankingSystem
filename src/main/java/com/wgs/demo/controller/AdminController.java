@@ -56,6 +56,7 @@ public class AdminController {
 	@RequestMapping("/logout")
 	private String logout(HttpSession session) {
 		session.removeAttribute("name");
+		session.removeAttribute("id");
 		return "redirect:/";
 	}
 
@@ -76,6 +77,7 @@ public class AdminController {
 			List<AdminReg> list = adminImpl.findByuId(userId);
 			for (AdminReg regList : list) {
 				session.setAttribute("name", regList.getName());
+				session.setAttribute("id", regList.getId());
 			}
 			return "redirect:/admin";
 		} else {
@@ -113,7 +115,24 @@ public class AdminController {
 		return "Owner/ownerDetails";
 
 	}
-
+	@RequestMapping("custMenuByAdmin")
+	private String custMenu() {
+		return "Admin/custBanking";
+	}
+	@RequestMapping("viewAdmin")
+	private String viewAdminDetails(Model model, HttpSession session,AdminReg admin) {
+		if (session.getAttribute("name") == null && session.getAttribute("id") == null) {
+			return "redirect:/adminLogin";
+		}
+		if (adminImpl.getTokenId() != 0) {
+			model.addAttribute("cust", adminRepo.findById((int) session.getAttribute("id")));
+			return "Admin/adminList";
+		} else {
+			String msg = "Hii : Empty Response";
+			model.addAttribute("cust", msg);
+		}
+		return "Admin/customerAccountDetails";
+	}
 	@RequestMapping("findAdminDetail")
 	private String findAdminDetail(HttpSession session) {
 		if (session.getAttribute("name") == null) {

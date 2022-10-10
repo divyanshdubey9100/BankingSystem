@@ -66,6 +66,17 @@ public class CustomerController {
 		return "Customer/customer";
 	}
 
+	@RequestMapping("viewCustomer")
+	private String viewCust(HttpSession session,Model model) {
+		if (session.getAttribute("custName") == null && session.getAttribute("custAccno") == null) {
+			return "redirect:/customerLogin";
+		}
+		int accNo=(int) session.getAttribute("custAccno");
+		List<Customer> list=custRepo.findByAccno(accNo);
+		model.addAttribute("cust", list);
+		return "Customer/custList";
+	}
+
 	@RequestMapping("checkAccountStatement")
 	private String checkAccountStatement(Customer customer, Model model, HttpSession session) {
 		if (session.getAttribute("custName") == null && session.getAttribute("custAccno") == null) {

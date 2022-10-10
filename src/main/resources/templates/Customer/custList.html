@@ -20,7 +20,6 @@
 				<th>gender</th>
 				<th>address</th>
 				<th>Edit</th>
-				<th>Delete</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -34,15 +33,9 @@
 				<td th:text="${temp.gender}" />
 				<td th:text="${temp.address}" />
 				<td>
-					<form action="/edit">
+					<form action="/custEdit" method="post">
 						<input type="hidden" name="accno" th:value="${temp.accno}">
 						<input type="submit" value="edit">
-					</form>
-				</td>
-				<td>
-					<form action="/delete">
-						<input type="hidden" name="accno" th:value="${temp.accno}">
-						<input type="submit" value="delete">
 					</form>
 				</td>
 			</tr>
