@@ -91,7 +91,7 @@ public class OwnerController {
 			for (Owner own : list) {
 				session.setAttribute("ownName", own.getName());
 				session.setAttribute("ownId", own.getId());
-			}
+			} 
 			return "redirect:/own";
 		} else {
 			return "redirect:/ownLogin";
