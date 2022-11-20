@@ -116,7 +116,7 @@ public class AdminController {
 
 	}
 	@RequestMapping("custMenuByAdmin")
-	private String custMenu() {
+	private String custMenu() { 
 		return "Admin/custBanking";
 	}
 	@RequestMapping("viewAdmin")
