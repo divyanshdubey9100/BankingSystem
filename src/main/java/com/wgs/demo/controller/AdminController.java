@@ -96,7 +96,7 @@ public class AdminController {
 		if (userName == null || ownerImpl.isIdExists(ownUid)==false) {
 			return "redirect:/ownLogout";
 		} 
-		return "Owner/createAdminAcc"; 
+		return "Owner/createAdminAcc";
 	}
 
 	@RequestMapping("createAdminAcc")
