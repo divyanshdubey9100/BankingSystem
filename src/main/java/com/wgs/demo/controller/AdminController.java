@@ -60,7 +60,7 @@ public class AdminController {
 	private String logout(HttpSession session) {
 		session.removeAttribute("name");
 		session.removeAttribute("id");
-		return "redirect:/adminLogin";
+		return "redirect:/";
 	}
 
 	@RequestMapping("admin")
@@ -68,7 +68,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		model.addAttribute("name", userName);
 		return "Admin/Admin";
@@ -85,7 +85,7 @@ public class AdminController {
 			}
 			return "redirect:/admin";
 		} else {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 	}
 
@@ -94,7 +94,7 @@ public class AdminController {
 		Object userName = session.getAttribute("ownName");
 		int ownUid=(int) session.getAttribute("ownId");
 		if (userName == null || ownerImpl.isIdExists(ownUid)==false) {
-			return "redirect:/ownLogout";
+			return "redirect:/ownLogin";
 		} 
 		return "Owner/createAdminAcc";
 	}
@@ -104,7 +104,7 @@ public class AdminController {
 		Object userName = session.getAttribute("ownName");
 		int ownUid=(int) session.getAttribute("ownId");
 		if (userName == null || ownerImpl.isIdExists(ownUid)==false) {
-			return "redirect:/ownLogout";
+			return "redirect:/ownLogin";
 		}
 		if (adminImpl.isUserIdExists(admin.getUserId()) == false
 				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
@@ -126,7 +126,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		return "Admin/custBanking";
 	}
@@ -135,7 +135,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		if (adminImpl.getTokenId() != 0) {
 			model.addAttribute("cust", adminRepo.findById((int) session.getAttribute("id")));
@@ -151,7 +151,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		return "Admin/findAdminDetail";
 	}
@@ -161,7 +161,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		if (adminImpl.getTokenId() != 0) {
 			List<AdminReg> adList = adminRepo.findAll();
@@ -178,7 +178,7 @@ public class AdminController {
 	private String deleteAdminInfo(@RequestParam int id, Model model, HttpSession session) {
 		Object userName = session.getAttribute("name");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		adminRepo.deleteById(id);
 		adminRepo.flush();
@@ -192,7 +192,7 @@ public class AdminController {
 	private String editAdminInfo(@RequestParam int id, Model model, HttpSession session) {
 		Object userName = session.getAttribute("name");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		List<AdminReg> acList = adminRepo.findById(id);
 		model.addAttribute("cust", acList);
@@ -204,7 +204,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		if (impl.isMobileExists(admin.getMobile()) == false && adminImpl.isUserIdExists(admin.getUserId()) == true) {
 			adminRepo.saveAndFlush(admin);
@@ -279,7 +279,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		int accno = 1000 + impl.getTokenId();
 		try {
@@ -318,7 +318,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		return "Admin/findCustomerDetails";
 	}
@@ -328,7 +328,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		if (impl.getTokenId() != 0) {
 			List<Customer> custList = custRepo.findAll();
@@ -347,7 +347,7 @@ public class AdminController {
 			Object userName = session.getAttribute("name");
 			int id=  (int) session.getAttribute("id");
 			if (userName == null || adminImpl.isIdExists(id)==false) {
-				return "redirect:/logout";
+				return "redirect:/adminLogin";
 			}
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 			model.addAttribute("cust", custList);
@@ -364,7 +364,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		if (impl.isPersonExists(customer.getName()) == true) {
 			List<Customer> custList = custRepo.findByName(customer.getName());
@@ -382,7 +382,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		if (impl.isMobileExists(customer.getMobile()) == true) {
 			List<Customer> custList = custRepo.findByMobile(customer.getMobile());
@@ -400,7 +400,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		if (impl.isMailExists(customer.getEmail()) == true) {
 			List<Customer> custList = custRepo.findByEmail(customer.getEmail());
@@ -418,7 +418,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		return "Admin/banking";
 	}
@@ -428,7 +428,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		if (impl.isAccExists(customer.getAccno()) == true) {
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
@@ -467,7 +467,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		if (impl.isAccExists(customer.getAccno()) == true) {
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
@@ -510,7 +510,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 		for (Customer cust : custList) {
@@ -528,7 +528,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		if (impl.isAccExists(customer.getAccno()) == true) {
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
@@ -552,7 +552,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		List<Customer> acList = custRepo.findByAccno(accno);
 		model.addAttribute("cust", acList);
@@ -564,7 +564,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		System.out.println(customer);
 		if (impl.isMobileExists(customer.getMobile()) == false && impl.isAccExists(customer.getAccno()) == true) {
@@ -588,7 +588,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		String mes = accno + " is Deleted Successfully";
 		custRepo.deleteById(accno);
@@ -603,7 +603,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		List<IndividualCustomer> list = trxRepo.findByAccNo(customer.getAccno());
 		model.addAttribute("cust", list);
@@ -635,7 +635,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		model.addAttribute("cust", custReqImpl.findAllReq());
 		return "Admin/showCustReq";
@@ -646,7 +646,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		try {
 			if (customer.getBalance() >= 1000 && impl.isAccExists(customer.getAccno()) == false
@@ -678,7 +678,7 @@ public class AdminController {
 		Object userName = session.getAttribute("name");
 		int id=  (int) session.getAttribute("id");
 		if (userName == null || adminImpl.isIdExists(id)==false) {
-			return "redirect:/logout";
+			return "redirect:/adminLogin";
 		}
 		custRegReqRepo.deleteById(customer.getAccno());
 		reqRepo.flush();
@@ -686,5 +686,4 @@ public class AdminController {
 		model.addAttribute("cust", msg);
 		return "redirect:/chkCustReq";
 	}
-
 }
