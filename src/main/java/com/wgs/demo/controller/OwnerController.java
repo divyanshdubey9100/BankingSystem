@@ -550,7 +550,9 @@ public class OwnerController {
 		if (session.getAttribute("ownName") == null) {
 			return "redirect:/ownLogin";
 		}
-		int accno = 1000 + impl.getTokenId();
+		int accRefNo = 1000 + impl.getTokenId();
+		int accno=custReqImpl.generateNewAccNo(accRefNo);
+//		System.out.println("Refno "+accRefNo+" accno "+accno);
 		try {
 			for (int i = 0; i <= impl.getTokenId(); i++) {
 				accno++;
@@ -563,7 +565,9 @@ public class OwnerController {
 					break;
 				} else if (impl.isAccExists(accno) == true) {
 					String mes = accno + " already exists! plz Wait...";
-					System.out.println(mes);
+//					System.out.println(mes);
+					custRegReqRepo.deleteById(accno);
+					reqRepo.flush();
 					model.addAttribute("cust", mes);
 					continue;
 				} else if (impl.isMobileExists(customer.getMobile()) == true) {

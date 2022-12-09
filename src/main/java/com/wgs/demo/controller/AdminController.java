@@ -48,8 +48,8 @@ public class AdminController {
 	AdminRegReqRepo reqRepo;
 	@Autowired
 	OwnerImpl ownerImpl;
-//	@Autowired
-//	AdminReqImpl reqImpl;
+	@Autowired
+	CustReqImpl reqImpl;
 
 	@RequestMapping("adminLogin")
 	private String adminLogin() {
@@ -281,7 +281,9 @@ public class AdminController {
 		if (userName == null || adminImpl.isIdExists(id)==false) {
 			return "redirect:/adminLogin";
 		}
-		int accno = 1000 + impl.getTokenId();
+		int accRefNo = 1000 + impl.getTokenId();
+		int accno=reqImpl.generateNewAccNo(accRefNo);
+//		System.out.println("Refno "+accRefNo+" accno "+accno);
 		try {
 			for (int i = 0; i <= impl.getTokenId(); i++) {
 				accno++;
@@ -658,7 +660,9 @@ public class AdminController {
 				model.addAttribute("cust", "Account Created Successfully.." + customer);
 			} else if (impl.isAccExists(customer.getAccno()) == true) {
 				String mes = customer.getAccno() + " already exists! plz Wait...";
-				System.out.println(mes);
+				custRegReqRepo.deleteById(customer.getAccno());
+				reqRepo.flush();
+//				System.out.println(mes);
 				model.addAttribute("cust", mes);
 			} else if (impl.isMobileExists(customer.getMobile()) == true) {
 				String mes = "Try with new Mobile No.. " + customer.getMobile() + " already exists!";
@@ -684,6 +688,6 @@ public class AdminController {
 		reqRepo.flush();
 		String msg = " Customer A/c Request Denied";
 		model.addAttribute("cust", msg);
-		return "redirect:/chkCustReq";
+		return "redirect:/chkCustReqByAdmin";
 	}
 }
