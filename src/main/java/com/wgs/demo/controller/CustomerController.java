@@ -160,7 +160,7 @@ public class CustomerController {
 		if (impl.isAccExists(customer.getAccno()) == true) {
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
 			for (Customer cust : custList) {
-				if ((cust.getBalance() - customer.getBalance()) > 1000 && cust.getBalance() > customer.getBalance()) {
+				if ((cust.getBalance() - customer.getBalance()) >= 1000 && cust.getBalance() > customer.getBalance()) {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss").format(Calendar.getInstance().getTime());
 					int trxId=1+impl.trxIdGen(customer.getAccno());
 					indivCust.setTrxId(trxId);
