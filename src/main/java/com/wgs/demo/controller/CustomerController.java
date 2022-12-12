@@ -317,5 +317,4 @@ public class CustomerController {
 		}
 		return "Customer/customerDetails";
 	}
-	
 }
