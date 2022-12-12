@@ -36,6 +36,10 @@ public class CustomerController {
 	IndividualTrxRepo trxRepo;
 	@Autowired
 	CustRegReqRepo reqRepo;
+	@Autowired
+	MethodImpl methodImpl;
+	@Autowired
+	CustRegReqRepo custRegReqRepo;
 	
 	@RequestMapping("customerLogin")
 	private String customerLogin() {
@@ -277,11 +281,14 @@ public class CustomerController {
 	}
 	@RequestMapping("submitCustAccReq")
 	private String submitCustomerAccReq(CustomerReqReq custReq, Model model, HttpSession session) {
-		int accno = 1000 + reqImpl.getTokenId();
+		int accRefNo = 1000 + reqImpl.getTokenId();
+		int accno=reqImpl.generateNewAccNo(accRefNo);
+//		System.out.println("Refno "+accRefNo+" accno "+accno);
 		try {
 			for (int i = 0; i <= reqImpl.getTokenId(); i++) {
 				accno++;
 				if (custReq.getBalance() >= 1000 && reqImpl.isAccExists(accno) == false
+						&& methodImpl.isAccExists(accno) == false
 						&& reqImpl.isMobileExists(custReq.getMobile()) == false
 						&& reqImpl.isMailExists(custReq.getEmail()) == false) {
 					custReq.setAccno(accno);
@@ -290,7 +297,9 @@ public class CustomerController {
 					break;
 				} else if (reqImpl.isAccExists(accno) == true) {
 					String mes = accno + " already exists! plz Wait...";
-					System.out.println(mes);
+//					System.out.println(mes);
+					custRegReqRepo.deleteById(accno);
+					reqRepo.flush();
 					model.addAttribute("cust", mes);
 					continue;
 				} else if (reqImpl.isMobileExists(custReq.getMobile()) == true) {
@@ -308,5 +317,4 @@ public class CustomerController {
 		}
 		return "Customer/customerDetails";
 	}
-	
 }

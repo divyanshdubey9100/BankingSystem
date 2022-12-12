@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.wgs.demo.classes.AdminRegReq;
+import com.wgs.demo.classes.Customer;
 import com.wgs.demo.classes.CustomerReqReq;
 import com.wgs.demo.repo.CustRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
@@ -30,6 +31,18 @@ public class CustReqImpl {
 		return (int) custRepo.count();
 	}
 
+	public int generateNewAccNo(int accno) {
+		for(Customer accList:custRepo.findAll()) {
+			if(accList.getAccno()==accno) {
+//				System.out.println(accno +" in if block methodImpl");
+				accno ++;
+				generateNewAccNo(accno);
+			}
+		}
+		return accno;
+		
+	}
+	
 	public boolean isMobileExists(String mobile) {
 		boolean mob = reqRepo.existsByMobile(mobile);
 		if (mob == true) {

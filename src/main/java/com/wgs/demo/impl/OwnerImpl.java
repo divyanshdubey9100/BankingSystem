@@ -25,6 +25,15 @@ public class OwnerImpl {
 			return false;
 		}
 	}
+	
+	public boolean isIdExists(int userId) {
+		boolean id = ownerRepo.existsById(userId);
+		if (id == true) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	public boolean isMobileExists(String mobile) {
 		boolean mob = ownerRepo.existsByMobile(mobile);

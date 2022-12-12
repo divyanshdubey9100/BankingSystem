@@ -25,7 +25,16 @@ public class AdminImpl {
 			return false;
 		}
 	}
-
+	
+	public boolean isIdExists(int userId) {
+		boolean id = adminRepo.existsById(userId);
+		if (id == true) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public boolean isMobileExists(String mobile) {
 		boolean mob = adminRepo.existsByMobile(mobile);
 		if (mob == true) {
