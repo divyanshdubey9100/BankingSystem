@@ -11,7 +11,7 @@ insert into admin_reg (id,address,gender,mobile,name,pass,user_id) VALUES (100,'
 insert into admin_reg (id,address,gender,mobile,name,pass,user_id) VALUES (101,'test555','other',5555555555,'test555','12345','test124@test555.com');
 insert into admin_reg (id,address,gender,mobile,name,pass,user_id) VALUES (102,'test666','other',6666666666,'test666','12345','test666@test666.com');
 insert into admin_reg (id,address,gender,mobile,name,pass,user_id) VALUES (103,'test777','other',7777777777,'test777','12345','test777@test777.com');
-insert into admin_reg (id,address,gender,mobile,name,pass,user_id) VALUES (104,'test888','other',8888888888,'test888','12345','test888@test888.com');
+insert into admin_reg (id,address,gender,mobile,name,pass,user_id) VALUES (104,'test888','other',8888888888,'test888','12345','test888@test888.com'); 
 
 ------------------Customer -----------------
 insert into customer (accno,address,balance,email,gender,mobile,name,pass) VALUES (1001,'test111',5000,'abc111@abc111.com','male','1111111111','test111','12345');
