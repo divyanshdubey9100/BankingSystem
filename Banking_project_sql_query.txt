@@ -40,7 +40,7 @@ insert into individual_customer (trx_id,acc_no,amt_bef_trx,current_balance,cust_
 
 -------------Owner ---------------------------
 
-insert into owner (id,gender,mobile,name,pass,user_id) values (1,'male','1111111111','test111','12345','test111@test111.com');
-insert into owner (id,gender,mobile,name,pass,user_id) values (2,'female','2222222222','test222','12345','test222@test222.com');
-insert into owner (id,gender,mobile,name,pass,user_id) values (3,'male','3333333333','test333','12345','test333@test333.com');
-insert into owner (id,gender,mobile,name,pass,user_id) values (4,'other','4444444444','test444','12345','test444@test444.com');
+insert into owner (id,gender,mobile,name,pass,user_id,address,dob,ques1,ans1,ques2,ans2) values (1,'male','1111111111','test111','12345','test111@test111.com','test111','01-01-2000','Name Of Your Favourite Pet','aaaa','Name Of Your Best Friend','aaaaa');
+insert into owner (id,gender,mobile,name,pass,user_id,address,dob,ques1,ans1,ques2,ans2) values (2,'female','2222222222','test222','12345','test222@test222.com','test222','01-01-2003','Name Of Your Favourite Pet','ddd','Name Of Your Best Friend','ddd');
+insert into owner (id,gender,mobile,name,pass,user_id,address,dob,ques1,ans1,ques2,ans2) values (3,'male','3333333333','test333','12345','test333@test333.com','test333','01-01-2002','Name Of Your Favourite Pet','ccc','Name Of Your Best Friend','ccc');
+insert into owner (id,gender,mobile,name,pass,user_id,address,dob,ques1,ans1,ques2,ans2) values (4,'other','4444444444','test444','12345','test444@test444.com','test444','01-01-2001','Name Of Your Favourite Pet','bbb','Name Of Your Best Friend','bbb');
