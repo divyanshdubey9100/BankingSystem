@@ -24,12 +24,12 @@
 		</thead>
 		<tbody>
 		<tr th:each="temp:${cust}">
-			<form action="/acceptAdminUpdateReq">
+			<form action="/acceptAdminUpdateReq" method="post">
 
 					<!-- 			id -->
 					<td><span th:text="${temp.id}" /></td>
-<!-- 					<input type="hidden" name="id" th:value="${temp.id}"> -->
-<!-- 					</td> -->
+					<input type="hidden" name="id" th:value="${temp.id}">
+					</td>
 					<!-- 					userId -->
 					<td><span th:text="${temp.userId}" /> <input type="hidden"
 						name="userId" th:value="${temp.userId}" /></td>
@@ -70,7 +70,7 @@
 					
 				</form>
 				
-				<form action="/chkAdminReq">
+				<form action="/chkAdminUpdateReq">
 						<td><input type="submit" value="Back"></td>
 				</form>
 			</tr>
@@ -80,6 +80,6 @@
 	</table>
 	<br>
 	<br>
-	<a href="/own" style="margin-left: 5%">Back</a>
+	<a href="/own" style="margin-left: 5%">Main Menu</a>
 </body>
 </html>

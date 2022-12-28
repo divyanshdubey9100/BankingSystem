@@ -598,7 +598,7 @@ public class OwnerController {
 		model.addAttribute("cust", reqImpl.findAllReq());
 		return "Owner/showAdminReq";
 	}
-	
+
 	@RequestMapping("chkAdminUpdateReq")
 	private String updateReqByAdmin(Model model, HttpSession session) {
 		if (session.getAttribute("ownName") == null) {
@@ -606,6 +606,58 @@ public class OwnerController {
 		}
 		model.addAttribute("cust", reqImpl.findUpdateReq());
 		return "Owner/adminUpdateReq";
+	}
+
+	@RequestMapping("cnfrmAdminUpdateReq")
+	private String confirmUpdateReq(AdminReg admin, Model model, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		model.addAttribute("cust", admin);
+		return "Owner/cnfrmAdminUpdate";
+	}
+
+	@RequestMapping("acceptAdminUpdateReq")
+	private String acceptUpdateReq(AdminReg admin, Model model, HttpSession session) {
+		Object userName = session.getAttribute("ownName");
+		if (userName == null) {
+			return "redirect:/ownLogin";
+		}
+		if (adminImpl.isUserIdExists(admin.getUserId()) == false
+				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
+			AdminReg adList = adminRepo.saveAndFlush(admin);
+			adminRepo.flush();
+			adminUpdateRepo.deleteById(admin.getId());
+			adminUpdateRepo.flush();
+			String mes = adList + " created Successfully!";
+			model.addAttribute("cust", mes);
+		} else if (adminImpl.isUserIdExists(admin.getUserId()) == true
+				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
+			AdminReg adList = adminRepo.saveAndFlush(admin);
+			adminRepo.flush();
+			adminUpdateRepo.deleteById(admin.getId());
+			adminUpdateRepo.flush();
+			String mes = adList + " created Successfully!";
+			model.addAttribute("cust", mes);
+		} else if (adminImpl.isMobileExists(admin.getMobile()) == true) {
+			String mes = admin.getMobile() + " Already Exists"+admin.getId();
+			adminUpdateRepo.deleteById(admin.getId());
+			adminUpdateRepo.flush();
+			model.addAttribute("cust", mes);
+		}
+		return "Owner/ownerDetails";
+	}
+
+	@RequestMapping("delAdminUpdateReq")
+	private String deleteAdminUpdateRequest(HttpSession session, @RequestParam int id, Model model) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		adminUpdateRepo.deleteById(id);
+		adminUpdateRepo.flush();
+		String msg = " Admin A/c Request Denied";
+		model.addAttribute("cust", msg);
+		return "redirect:/chkAdminUpdateReq";
 	}
 
 	@RequestMapping("cnfrmAdminReq")
@@ -621,18 +673,6 @@ public class OwnerController {
 		return "Owner/cnfrmAdminReq";
 	}
 
-	@RequestMapping("cnfrmAdminUpdateReq")
-	private String confirmUpdateReq(AdminReg admin, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
-			return "redirect:/ownLogin";
-		}
-		model.addAttribute("cust", admin);
-		String msg = admin + "Record Deleted";
-		adminUpdateRepo.deleteById(admin.getId());
-		adminUpdateRepo.flush();
-		System.out.println(msg);
-		return "Owner/cnfrmAdminUpdate";
-	}
 	@RequestMapping("acceptAdminReq")
 	private String acceptReq(AdminReg admin, Model model, HttpSession session) {
 		Object userName = session.getAttribute("ownName");
@@ -642,32 +682,6 @@ public class OwnerController {
 		if (adminImpl.isUserIdExists(admin.getUserId()) == false
 				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
 			AdminReg adList = adminRepo.save(admin);
-			adminRepo.flush();
-			String mes = adList + " created Successfully!";
-			model.addAttribute("cust", mes);
-		} else if (adminImpl.isUserIdExists(admin.getUserId()) == true) {
-			String mes = admin.getUserId() + " Already Exists";
-			reqRepo.deleteByMobile(admin.getMobile());
-			reqRepo.flush();
-			model.addAttribute("cust", mes);
-		} else if (adminImpl.isMobileExists(admin.getMobile()) == true) {
-			String mes = admin.getMobile() + " Already Exists";
-			reqRepo.deleteByMobile(admin.getMobile());
-			reqRepo.flush();
-			model.addAttribute("cust", mes);
-		}
-		return "Owner/ownerDetails";
-	}
-	
-	@RequestMapping("acceptAdminUpdateReq")
-	private String acceptUpdateReq(AdminReg admin, Model model, HttpSession session) {
-		Object userName = session.getAttribute("ownName");
-		if (userName == null) {
-			return "redirect:/ownLogin";
-		}
-		if (adminImpl.isUserIdExists(admin.getUserId()) == false
-				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
-			AdminReg adList = adminRepo.saveAndFlush(admin);
 			adminRepo.flush();
 			String mes = adList + " created Successfully!";
 			model.addAttribute("cust", mes);
@@ -695,18 +709,6 @@ public class OwnerController {
 		String msg = " Admin A/c Request Denied";
 		model.addAttribute("cust", msg);
 		return "redirect:/chkAdminReq";
-	}
-	
-	@RequestMapping("delAdminUpdateReq")
-	private String deleteAdminUpdateRequest(HttpSession session, @RequestParam int id, Model model) {
-		if (session.getAttribute("ownName") == null) {
-			return "redirect:/ownLogin";
-		}
-		adminUpdateRepo.deleteById(id);
-		adminUpdateRepo.flush();
-		String msg = " Admin A/c Request Denied";
-		model.addAttribute("cust", msg);
-		return "redirect:/chkAdminUpdateReq";
 	}
 
 	@RequestMapping("chkCustReq")
