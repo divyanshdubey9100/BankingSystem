@@ -17,6 +17,12 @@
 				<th>mobile</th>
 				<th>gender</th>
 				<th>pass</th>
+				<th>dob</th>
+				<th>address</th>
+				<th>ques1</th>
+				<th>ans1</th>
+				<th>ques2</th>
+				<th>ans2</th>
 				<th>Edit</th>
 			</tr>
 		</thead>
@@ -28,6 +34,12 @@
 				<td th:text="${temp.mobile}" />
 				<td th:text="${temp.gender}" />
 				<td th:text="${temp.pass}" />
+				<td th:text="${temp.dob}" />
+				<td th:text="${temp.address}" />
+				<td th:text="${temp.ques1}" />
+				<td th:text="${temp.ans1}" />
+				<td th:text="${temp.ques2}" />
+				<td th:text="${temp.ans2}" />
 				<td>
 					<form action="/editOwn">
 						<input type="hidden" name="id" th:value="${temp.id}">

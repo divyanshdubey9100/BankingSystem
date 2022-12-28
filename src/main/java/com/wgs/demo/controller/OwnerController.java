@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wgs.demo.classes.AdminReg;
-import com.wgs.demo.classes.AdminUpdateReq;
 import com.wgs.demo.classes.Customer;
 import com.wgs.demo.classes.IndividualCustomer;
 import com.wgs.demo.classes.Owner;
@@ -62,7 +61,7 @@ public class OwnerController {
 		return "Owner/login";
 	}
 
-	@RequestMapping("regNewOwn")
+	@RequestMapping("regOwn")
 	private String createOwnAcc() {
 		return "Owner/openAccount";
 	}
