@@ -264,8 +264,7 @@ public class OwnerController {
 		custRepo.deleteById(accno);
 		custRepo.flush();
 		System.out.println(mes);
-		model.addAttribute("cust", mes);
-		return "redirect:/showAllCustomers";
+		return "redirect:/showAllCust";
 	}
 
 	@RequestMapping("custByAccno")
@@ -339,6 +338,7 @@ public class OwnerController {
 		}
 		return "Owner/custBanking";
 	}
+
 	@RequestMapping("custOperateionsByOwn")
 	private String custOperations() {
 		return "Owner/custOperations";
@@ -551,7 +551,7 @@ public class OwnerController {
 			return "redirect:/ownLogin";
 		}
 		int accRefNo = 1000 + impl.getTokenId();
-		int accno=custReqImpl.generateNewAccNo(accRefNo);
+		int accno = custReqImpl.generateNewAccNo(accRefNo);
 //		System.out.println("Refno "+accRefNo+" accno "+accno);
 		try {
 			for (int i = 0; i <= impl.getTokenId(); i++) {
