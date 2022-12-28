@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.wgs.demo.classes.AdminRegReq;
 import com.wgs.demo.repo.AdminRegReqRepo;
+import com.wgs.demo.repo.AdminUpdateRepo;
 
 @Component
 public class AdminReqImpl {
@@ -14,6 +15,8 @@ public class AdminReqImpl {
 	AdminRegReqRepo adminRepo;
 	@Autowired
 	AdminRegReq regReq;
+	@Autowired
+	AdminUpdateRepo adminUpdateRepo;
 
 	public int getTokenId() {
 		return (int) adminRepo.count();
@@ -39,5 +42,9 @@ public class AdminReqImpl {
 	
 	public List<AdminRegReq> findAllReq(){
 		return adminRepo.findAll();
+	}
+
+	public Object findUpdateReq() {
+		return adminUpdateRepo.findAll();
 	}
 }

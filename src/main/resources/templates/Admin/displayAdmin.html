@@ -18,8 +18,6 @@
 				<th>password</th>
 				<th>gender</th>
 				<th>address</th>
-				<th>edit</th>
-				<th>Delete</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -31,18 +29,6 @@
 				<td th:text="${temp.pass}" />
 				<td th:text="${temp.gender}" />
 				<td th:text="${temp.address}" />
-				<td>
-					<form action="/editAdmin" method="post">
-						<input type="hidden" name="id" th:value="${temp.id}">
-						<input type="submit" value="Update">
-					</form>
-				</td>
-				<td>
-					<form action="/deleteAdmin">
-						<input type="hidden" name="id" th:value="${temp.id}">
-						<input type="submit" value="delete">
-					</form>
-				</td>
 			</tr>
 		</tbody>
 	</table>

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.wgs.demo.classes.AdminReg;
 import com.wgs.demo.classes.Customer;
+import com.wgs.demo.repo.AdminUpdateRepo;
 import com.wgs.demo.repo.CustRepo;
 import com.wgs.demo.repo.IndividualTrxRepo;
 
@@ -27,6 +28,7 @@ public class MethodImpl {
 			return false;
 		}
 	}
+	
 
 	public int getTokenId() {
 		return (int) custRepo.count();

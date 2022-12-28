@@ -7,7 +7,7 @@
 <style>
 </style>
 <body>
-	<h3>Enter Admin Details</h3>
+	<h3>Please Confirm/Delete</h3>
 	<table border="1" width="auto" padding="5%">
 		<thead>
 			<tr>
@@ -18,17 +18,18 @@
 				<th>password</th>
 				<th>gender</th>
 				<th>address</th>
-				<th>update</th>
+				<th>Accept</th>
+				<th>Denie</th>
 			</tr>
 		</thead>
 		<tbody>
-			<form action="/editAdminDetail" method="post">
-				<tr th:each="temp:${cust}">
+		<tr th:each="temp:${cust}">
+			<form action="/acceptAdminUpdateReq">
 
 					<!-- 			id -->
-					<td><span th:text="${temp.id}" /> <input type="hidden"
-						name="id" th:value="${temp.id}" /></td>
-
+					<td><span th:text="${temp.id}" /></td>
+<!-- 					<input type="hidden" name="id" th:value="${temp.id}"> -->
+<!-- 					</td> -->
 					<!-- 					userId -->
 					<td><span th:text="${temp.userId}" /> <input type="hidden"
 						name="userId" th:value="${temp.userId}" /></td>
@@ -43,13 +44,14 @@
 					
 					<td>
 					<span th:text="${temp.mobile}" /> <br><br>
-					<input type="tel" name="mobile"
-							placeholder="enter mobile_no.." required="required">
+					<input type="hidden" name="mobile"
+					th:value="${temp.mobile}">
 					</td>
 					<!-- 				pass -->
 					<td>
-					<input type="password" name="pass" placeholder="enter New password"
-						required="required">
+					<span th:text="${temp.pass}" />
+					<input type="hidden" name="pass"
+					th:value="${temp.pass}">
 					</td>
 
 					
@@ -62,17 +64,22 @@
 					<!-- 				Address -->
 					<td>
 					<span th:text="${temp.address}" /><br><br>
-					<textarea name="address"
-							placeholder="Enter Your Full Address" required="required">
-				</textarea></td>
-					<td><input type="submit" value="Submit Request"></td>
+					<input type="hidden" name="address" th:value="${temp.address}">
+				</td>
+					<td><input type="submit" value="Accept"></td>
+					
+				</form>
+				
+				<form action="/chkAdminReq">
+						<td><input type="submit" value="Back"></td>
+				</form>
+			</tr>
+			
 
-				</tr>
-			</form>
 		</tbody>
 	</table>
 	<br>
 	<br>
-	<a href="/admin" style="margin-left: 5%">Back</a>
+	<a href="/own" style="margin-left: 5%">Back</a>
 </body>
 </html>
