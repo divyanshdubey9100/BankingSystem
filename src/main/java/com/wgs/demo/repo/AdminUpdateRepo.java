@@ -16,6 +16,6 @@ public interface AdminUpdateRepo extends JpaRepository<AdminUpdateReq, Integer>{
 	boolean existsByUserId(String userId);
 
 	boolean existsByMobile(String mobile);
-	void deleteByMobile(String mobile);
+	
 
 }

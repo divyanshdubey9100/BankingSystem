@@ -16,6 +16,7 @@ public interface AdminRegReqRepo extends JpaRepository<AdminRegReq, Integer>{
 	boolean existsByUserId(String userId);
 
 	boolean existsByMobile(String mobile);
+	
 	void deleteByMobile(String mobile);
 
 }

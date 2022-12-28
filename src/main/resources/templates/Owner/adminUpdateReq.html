@@ -24,7 +24,7 @@
 		</thead>
 		<tbody>
 		<tr th:each="temp:${cust}">
-			<form action="/cnfrmAdminUpdateReq">
+			<form action="/cnfrmAdminUpdateReq" method="post">
 
 					<!-- 			id -->
 					<td><span th:text="${temp.id}" />

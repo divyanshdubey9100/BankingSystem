@@ -214,7 +214,7 @@ public class AdminController {
 			return "redirect:/adminLogin";
 		}
 		if (adminImpl.isMobileExists(admin.getMobile()) == false && adminImpl.isUserIdExists(admin.getUserId()) == true
-				&& adminImpl.isUpdateRequested(admin.getUserId())==false) {
+				&& adminImpl.isUpdateRequested(admin.getUserId())==false && admin.getId()!=id) {
 			adminUpdateRepo.save(admin);
 			model.addAttribute("cust", admin);
 			String mes=admin +"Update Requested";
@@ -223,7 +223,15 @@ public class AdminController {
 			adminRepo.flush();
 			System.out.println(mes);
 			return "Admin/displayAdmin";
-		} else if (adminImpl.isUserIdExists(admin.getUserId()) == false) {
+		}else if(adminImpl.isMobileExists(admin.getMobile()) == false && adminImpl.isUserIdExists(admin.getUserId()) == true
+				&& adminImpl.isUpdateRequested(admin.getUserId())==false && admin.getId()==id) {
+			adminUpdateRepo.save(admin);
+			model.addAttribute("cust", admin);
+			String mes=admin +"Update Requested";
+			adminUpdateRepo.flush();
+			System.out.println(mes);
+			return "Admin/displayAdmin";
+		}else if (adminImpl.isUserIdExists(admin.getUserId()) == false) {
 			String mes = admin.getUserId() + " not avail! plz Wait...";
 			System.out.println(mes);
 			model.addAttribute("cust", mes);
