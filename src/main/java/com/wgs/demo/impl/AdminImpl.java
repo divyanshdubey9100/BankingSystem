@@ -7,11 +7,14 @@ import org.springframework.stereotype.Component;
 
 import com.wgs.demo.classes.AdminReg;
 import com.wgs.demo.repo.AdminRegRepo;
+import com.wgs.demo.repo.AdminUpdateRepo;
 
 @Component
 public class AdminImpl {
 	@Autowired
 	AdminRegRepo adminRepo;
+	@Autowired
+	AdminUpdateRepo adminUpdateRepo;
 
 	public int getTokenId() {
 		return (int) adminRepo.count();
@@ -19,6 +22,14 @@ public class AdminImpl {
 
 	public boolean isUserIdExists(String userId) {
 		boolean id = adminRepo.existsByUserId(userId);
+		if (id == true) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public boolean isUpdateRequested(String userId) {
+		boolean id = adminUpdateRepo.existsByUserId(userId);
 		if (id == true) {
 			return true;
 		} else {

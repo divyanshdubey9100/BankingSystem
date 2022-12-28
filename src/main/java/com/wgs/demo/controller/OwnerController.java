@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wgs.demo.classes.AdminReg;
+import com.wgs.demo.classes.AdminUpdateReq;
 import com.wgs.demo.classes.Customer;
 import com.wgs.demo.classes.IndividualCustomer;
 import com.wgs.demo.classes.Owner;
@@ -23,6 +24,7 @@ import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.impl.OwnerImpl;
 import com.wgs.demo.repo.AdminRegRepo;
 import com.wgs.demo.repo.AdminRegReqRepo;
+import com.wgs.demo.repo.AdminUpdateRepo;
 import com.wgs.demo.repo.CustRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
 import com.wgs.demo.repo.IndividualTrxRepo;
@@ -52,6 +54,8 @@ public class OwnerController {
 	AdminRegReqRepo reqRepo;
 	@Autowired
 	CustRegReqRepo custRegReqRepo;
+	@Autowired
+	AdminUpdateRepo adminUpdateRepo;
 
 	@RequestMapping("ownLogin")
 	private String ownerLogin() {
@@ -264,8 +268,7 @@ public class OwnerController {
 		custRepo.deleteById(accno);
 		custRepo.flush();
 		System.out.println(mes);
-		model.addAttribute("cust", mes);
-		return "redirect:/showAllCustomers";
+		return "redirect:/showAllCust";
 	}
 
 	@RequestMapping("custByAccno")
@@ -339,6 +342,7 @@ public class OwnerController {
 		}
 		return "Owner/custBanking";
 	}
+
 	@RequestMapping("custOperateionsByOwn")
 	private String custOperations() {
 		return "Owner/custOperations";
@@ -551,7 +555,7 @@ public class OwnerController {
 			return "redirect:/ownLogin";
 		}
 		int accRefNo = 1000 + impl.getTokenId();
-		int accno=custReqImpl.generateNewAccNo(accRefNo);
+		int accno = custReqImpl.generateNewAccNo(accRefNo);
 //		System.out.println("Refno "+accRefNo+" accno "+accno);
 		try {
 			for (int i = 0; i <= impl.getTokenId(); i++) {
@@ -594,6 +598,15 @@ public class OwnerController {
 		model.addAttribute("cust", reqImpl.findAllReq());
 		return "Owner/showAdminReq";
 	}
+	
+	@RequestMapping("chkAdminUpdateReq")
+	private String updateReqByAdmin(Model model, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		model.addAttribute("cust", reqImpl.findUpdateReq());
+		return "Owner/adminUpdateReq";
+	}
 
 	@RequestMapping("cnfrmAdminReq")
 	private String confirmReq(AdminReg admin, Model model, HttpSession session) {
@@ -608,6 +621,18 @@ public class OwnerController {
 		return "Owner/cnfrmAdminReq";
 	}
 
+	@RequestMapping("cnfrmAdminUpdateReq")
+	private String confirmUpdateReq(AdminReg admin, Model model, HttpSession session) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		model.addAttribute("cust", admin);
+		String msg = admin + "Record Deleted";
+		adminUpdateRepo.deleteById(admin.getId());
+		adminUpdateRepo.flush();
+		System.out.println(msg);
+		return "Owner/cnfrmAdminUpdate";
+	}
 	@RequestMapping("acceptAdminReq")
 	private String acceptReq(AdminReg admin, Model model, HttpSession session) {
 		Object userName = session.getAttribute("ownName");
@@ -617,6 +642,32 @@ public class OwnerController {
 		if (adminImpl.isUserIdExists(admin.getUserId()) == false
 				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
 			AdminReg adList = adminRepo.save(admin);
+			adminRepo.flush();
+			String mes = adList + " created Successfully!";
+			model.addAttribute("cust", mes);
+		} else if (adminImpl.isUserIdExists(admin.getUserId()) == true) {
+			String mes = admin.getUserId() + " Already Exists";
+			reqRepo.deleteByMobile(admin.getMobile());
+			reqRepo.flush();
+			model.addAttribute("cust", mes);
+		} else if (adminImpl.isMobileExists(admin.getMobile()) == true) {
+			String mes = admin.getMobile() + " Already Exists";
+			reqRepo.deleteByMobile(admin.getMobile());
+			reqRepo.flush();
+			model.addAttribute("cust", mes);
+		}
+		return "Owner/ownerDetails";
+	}
+	
+	@RequestMapping("acceptAdminUpdateReq")
+	private String acceptUpdateReq(AdminReg admin, Model model, HttpSession session) {
+		Object userName = session.getAttribute("ownName");
+		if (userName == null) {
+			return "redirect:/ownLogin";
+		}
+		if (adminImpl.isUserIdExists(admin.getUserId()) == false
+				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
+			AdminReg adList = adminRepo.saveAndFlush(admin);
 			adminRepo.flush();
 			String mes = adList + " created Successfully!";
 			model.addAttribute("cust", mes);
@@ -644,6 +695,18 @@ public class OwnerController {
 		String msg = " Admin A/c Request Denied";
 		model.addAttribute("cust", msg);
 		return "redirect:/chkAdminReq";
+	}
+	
+	@RequestMapping("delAdminUpdateReq")
+	private String deleteAdminUpdateRequest(HttpSession session, @RequestParam int id, Model model) {
+		if (session.getAttribute("ownName") == null) {
+			return "redirect:/ownLogin";
+		}
+		adminUpdateRepo.deleteById(id);
+		adminUpdateRepo.flush();
+		String msg = " Admin A/c Request Denied";
+		model.addAttribute("cust", msg);
+		return "redirect:/chkAdminUpdateReq";
 	}
 
 	@RequestMapping("chkCustReq")
