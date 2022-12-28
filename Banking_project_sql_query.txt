@@ -5,7 +5,7 @@ insert into admin_reg_req (id,address,gender,mobile,name,pass,user_id) VALUES (1
 insert into admin_reg_req (id,address,gender,mobile,name,pass,user_id) VALUES (108,'test222','other',2222222222,'test222','12345','test222@test222.com');
 insert into admin_reg_req (id,address,gender,mobile,name,pass,user_id) VALUES (109,'test333','other',3333333333,'test333','12345','test123@test333.com');
 
----------------Admin Reg -------------------
+---------------Admin Reg --------------------
 
 insert into admin_reg (id,address,gender,mobile,name,pass,user_id) VALUES (100,'test444','other',4444444444,'test444','12345','test444@test444.com');
 insert into admin_reg (id,address,gender,mobile,name,pass,user_id) VALUES (101,'test555','other',5555555555,'test555','12345','test124@test555.com');
