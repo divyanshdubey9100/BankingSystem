@@ -94,6 +94,7 @@ public class OwnerController {
 			for (Owner own : list) {
 				session.setAttribute("ownName", own.getName());
 				session.setAttribute("ownId", own.getId());
+				session.setAttribute("ownUserId", own.getUserId());
 			}
 			return "redirect:/own";
 		} else {
@@ -103,23 +104,27 @@ public class OwnerController {
 
 	@RequestMapping("own")
 	private String ownerUi(Model model, HttpSession session) {
-		Object userName = session.getAttribute("ownName");
-		if (userName == null) {
+//		Object userName = session.getAttribute("ownName");
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
-		model.addAttribute("name", userName);
+		model.addAttribute("name", session.getAttribute("ownName"));
 		return "Owner/owner";
 	}
 
 	@RequestMapping("/ownLogout")
 	private String ownerLogout(HttpSession session) {
 		session.removeAttribute("ownName");
-		return "redirect:/";
+		session.removeAttribute("ownId");
+		session.removeAttribute("ownUserId");
+		return "redirect:/" + "ownLogin";
 	}
 
 	@RequestMapping("viewOwnProfile")
 	private String viewOwnInfo(Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		int id = (int) session.getAttribute("ownId");
@@ -129,7 +134,8 @@ public class OwnerController {
 
 	@RequestMapping("editOwn")
 	private String editOwner(@RequestParam int id, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		model.addAttribute("cust", ownerImpl.getDetaislById(id));
@@ -138,7 +144,8 @@ public class OwnerController {
 
 	@RequestMapping("updateOwnProfile")
 	private String editAdminDetail(Owner owner, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (ownerImpl.isMobileExists(owner.getMobile()) == false
@@ -204,7 +211,8 @@ public class OwnerController {
 
 	@RequestMapping("findCustDetails")
 	private String findCust(HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		return "Owner/findCustomerDetails";
@@ -212,7 +220,8 @@ public class OwnerController {
 
 	@RequestMapping("showAllCust")
 	private String showAllCust(Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (impl.getTokenId() != 0) {
@@ -228,7 +237,8 @@ public class OwnerController {
 
 	@RequestMapping("ownCustEdit")
 	private String editCustInfo(@RequestParam int accno, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		List<Customer> acList = custRepo.findByAccno(accno);
@@ -238,7 +248,8 @@ public class OwnerController {
 
 	@RequestMapping("updateCustEdit")
 	private String editCustDetail(Customer customer, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		System.out.println(customer);
@@ -260,7 +271,8 @@ public class OwnerController {
 
 	@RequestMapping("ownCustDelete")
 	private String deleteCustInfo(@RequestParam int accno, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		String mes = accno + " is Deleted Successfully";
@@ -273,7 +285,8 @@ public class OwnerController {
 	@RequestMapping("custByAccno")
 	private String custDetailsBasedOnAccNO(Model model, Customer customer, HttpSession session) {
 		if (impl.isAccExists(customer.getAccno()) == true) {
-			if (session.getAttribute("ownName") == null) {
+			if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+					|| session.getAttribute("ownUserId") == null) {
 				return "redirect:/ownLogin";
 			}
 			List<Customer> custList = custRepo.findByAccno(customer.getAccno());
@@ -304,7 +317,8 @@ public class OwnerController {
 
 	@RequestMapping("custByMobile")
 	private String custByMobile(Customer customer, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (impl.isMobileExists(customer.getMobile()) == true) {
@@ -320,7 +334,8 @@ public class OwnerController {
 
 	@RequestMapping("custByEmail")
 	private String custByEmail(Customer customer, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (impl.isMailExists(customer.getEmail()) == true) {
@@ -336,7 +351,8 @@ public class OwnerController {
 
 	@RequestMapping("ownBanking")
 	private String customerBanking(HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		return "Owner/custBanking";
@@ -349,7 +365,8 @@ public class OwnerController {
 
 	@RequestMapping("ownDeposit")
 	private String ownDeposit(Customer customer, Model model, HttpSession session, IndividualCustomer indivCust) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (impl.isAccExists(customer.getAccno()) == true) {
@@ -386,7 +403,8 @@ public class OwnerController {
 
 	@RequestMapping("ownWithdraw")
 	private String withdraw(Customer customer, Model model, HttpSession session, IndividualCustomer indivCust) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (impl.isAccExists(customer.getAccno()) == true) {
@@ -427,7 +445,8 @@ public class OwnerController {
 
 	@RequestMapping("ownCheckBalance")
 	private String checkCustomerBalance(Customer customer, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		List<Customer> custList = custRepo.findByAccno(customer.getAccno());
@@ -443,7 +462,8 @@ public class OwnerController {
 
 	@RequestMapping("deleteCustAccByAccno")
 	private String deleteCustomerAccByAccno(Customer customer, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (impl.isAccExists(customer.getAccno()) == true) {
@@ -463,7 +483,8 @@ public class OwnerController {
 
 	@RequestMapping("ownPassbook")
 	private String checkOwnPassbook(Customer customer, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		List<IndividualCustomer> list = trxRepo.findByAccNo(customer.getAccno());
@@ -473,7 +494,8 @@ public class OwnerController {
 
 	@RequestMapping("findAdminDetailByOwn")
 	private String findAdminDetailByOwn(HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		return "Owner/findAdminDetail";
@@ -481,7 +503,8 @@ public class OwnerController {
 
 	@RequestMapping("showAllAdminByOwn")
 	private String showAllAdminByOwn(Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (adminImpl.getTokenId() != 0) {
@@ -497,7 +520,8 @@ public class OwnerController {
 
 	@RequestMapping("deleteAdminByOwn")
 	private String deleteAdminInfoByOwn(@RequestParam int id, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		adminRepo.deleteById(id);
@@ -510,7 +534,8 @@ public class OwnerController {
 
 	@RequestMapping("editAdminByOwn")
 	private String editAdminInfoByOwner(@RequestParam int id, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		List<AdminReg> acList = adminRepo.findById(id);
@@ -520,7 +545,8 @@ public class OwnerController {
 
 	@RequestMapping("editAdminDetailByOwn")
 	private String editAdminDetailByOwn(AdminReg admin, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		System.out.println(admin);
@@ -542,7 +568,8 @@ public class OwnerController {
 
 	@RequestMapping("openCustAccount")
 	private String openCustAccount(HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		return "Owner/openCustomerAccount";
@@ -550,7 +577,8 @@ public class OwnerController {
 
 	@RequestMapping("customerAccountDetailsByOwn")
 	private String customerAccountDetailsByOwn(Customer customer, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		int accRefNo = 1000 + impl.getTokenId();
@@ -591,7 +619,8 @@ public class OwnerController {
 
 	@RequestMapping("chkAdminReq")
 	private String checkAdminReq(Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		model.addAttribute("cust", reqImpl.findAllReq());
@@ -600,7 +629,8 @@ public class OwnerController {
 
 	@RequestMapping("chkAdminUpdateReq")
 	private String updateReqByAdmin(Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		model.addAttribute("cust", reqImpl.findUpdateReq());
@@ -609,7 +639,8 @@ public class OwnerController {
 
 	@RequestMapping("cnfrmAdminUpdateReq")
 	private String confirmUpdateReq(AdminReg admin, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		model.addAttribute("cust", admin);
@@ -618,8 +649,8 @@ public class OwnerController {
 
 	@RequestMapping("acceptAdminUpdateReq")
 	private String acceptUpdateReq(AdminReg admin, Model model, HttpSession session) {
-		Object userName = session.getAttribute("ownName");
-		if (userName == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (adminImpl.isUserIdExists(admin.getUserId()) == false
@@ -639,7 +670,7 @@ public class OwnerController {
 			String mes = adList + " created Successfully!";
 			model.addAttribute("cust", mes);
 		} else if (adminImpl.isMobileExists(admin.getMobile()) == true) {
-			String mes = admin.getMobile() + " Already Exists"+admin.getId();
+			String mes = admin.getMobile() + " Already Exists" + admin.getId();
 			adminUpdateRepo.deleteById(admin.getId());
 			adminUpdateRepo.flush();
 			model.addAttribute("cust", mes);
@@ -649,7 +680,8 @@ public class OwnerController {
 
 	@RequestMapping("delAdminUpdateReq")
 	private String deleteAdminUpdateRequest(HttpSession session, @RequestParam int id, Model model) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		adminUpdateRepo.deleteById(id);
@@ -661,7 +693,8 @@ public class OwnerController {
 
 	@RequestMapping("cnfrmAdminReq")
 	private String confirmReq(AdminReg admin, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		model.addAttribute("cust", admin);
@@ -674,8 +707,8 @@ public class OwnerController {
 
 	@RequestMapping("acceptAdminReq")
 	private String acceptReq(AdminReg admin, Model model, HttpSession session) {
-		Object userName = session.getAttribute("ownName");
-		if (userName == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (adminImpl.isUserIdExists(admin.getUserId()) == false
@@ -700,7 +733,8 @@ public class OwnerController {
 
 	@RequestMapping("delAdminReq")
 	private String deleteAdminRequest(HttpSession session, @RequestParam int id, Model model) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		reqRepo.deleteById(id);
@@ -712,7 +746,8 @@ public class OwnerController {
 
 	@RequestMapping("chkCustReq")
 	private String checkCustReq(Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		model.addAttribute("cust", custReqImpl.findAllReq());
@@ -721,7 +756,8 @@ public class OwnerController {
 
 	@RequestMapping("acceptCustReq")
 	private String acceptCustomerRequest(Customer customer, Model model, HttpSession session) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		try {
@@ -751,7 +787,8 @@ public class OwnerController {
 
 	@RequestMapping("delCustReq")
 	private String deleteCustomerRequest(HttpSession session, Customer customer, Model model) {
-		if (session.getAttribute("ownName") == null) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		custRegReqRepo.deleteById(customer.getAccno());
