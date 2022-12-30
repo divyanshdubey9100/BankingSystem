@@ -93,9 +93,8 @@ public class AdminController {
 
 	@RequestMapping("registerAdmin")
 	private String registerAdmin(HttpSession session) {
-		Object userName = session.getAttribute("ownName");
-		int ownUid = (int) session.getAttribute("ownId");
-		if (userName == null || ownerImpl.isIdExists(ownUid) == false) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		return "Owner/createAdminAcc";
@@ -103,9 +102,8 @@ public class AdminController {
 
 	@RequestMapping("createAdminAcc")
 	private String createAdminAcc(AdminReg admin, Model model, HttpSession session) {
-		Object userName = session.getAttribute("ownName");
-		int ownUid = (int) session.getAttribute("ownId");
-		if (userName == null || ownerImpl.isIdExists(ownUid) == false) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (adminImpl.isUserIdExists(admin.getUserId()) == false
