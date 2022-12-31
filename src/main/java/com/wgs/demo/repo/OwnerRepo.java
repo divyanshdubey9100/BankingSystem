@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.wgs.demo.classes.Customer;
 import com.wgs.demo.classes.Owner;
 
 public interface OwnerRepo extends JpaRepository<Owner, Integer> {

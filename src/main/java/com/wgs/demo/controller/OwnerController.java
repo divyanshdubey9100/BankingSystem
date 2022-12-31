@@ -176,36 +176,70 @@ public class OwnerController {
 	}
 
 	@RequestMapping("resetOwnPass")
-	private String forgetPwd(@RequestParam String mobile, String userId, Model model) {
-		List<Owner> list = ownerImpl.findMailAndMobile(userId, mobile);
+	private String forgetPwd(Owner owner, Model model) {
+		List<Owner> list = ownerImpl.findMailAndMobile(owner.getUserId(), owner.getMobile());
 		if (list.size() != 0) {
-			model.addAttribute("cust", list);
-			return "Owner/resetOwnPass";
+			System.out.println("Record Found " + list.size());
+			for (Owner own : list) {
+				if (owner.getQues1().equals(own.getQues1()) && owner.getAns1().equals(own.getAns1())
+						&& owner.getQues2().equals(own.getQues2()) && owner.getAns2().equals(own.getAns2())) {
+					System.out.println("Question Verification Successful..");
+					model.addAttribute("cust", list);
+					return "Owner/resetOwnPass";
+				} else {
+					String msg = "Hi Enter Valid Ques and Ans";
+					model.addAttribute("cust", msg);
+				}
+			}
 		} else {
-			String msg = "Hi " + userId + " Mobile_no " + mobile + " No Details Found !";
+			String msg = "Hi " + owner.getUserId() + " Mobile_no " + owner.getMobile() + " No Details Found !";
 			model.addAttribute("cust", msg);
 		}
 		return "Owner/ownerDetails";
 	}
 
 	@RequestMapping("resetOwnMail")
-	private String findOwnMail(@RequestParam String name, String mobile, Model model) {
-		List<Owner> list = ownerImpl.findUidAndMobile(name, mobile);
+	private String findOwnMail(Owner owner, Model model) {
+		List<Owner> list = ownerImpl.findUidAndMobile(owner.getName(), owner.getMobile());
 		if (list.size() != 0) {
+			System.out.println("Record Found " + list.size());
 			for (Owner own : list) {
-				model.addAttribute("cust", own.getUserId());
+				if (owner.getQues1().equals(own.getQues1()) && owner.getAns1().equals(own.getAns1())
+						&& owner.getQues2().equals(own.getQues2()) && owner.getAns2().equals(own.getAns2())) {
+					System.out.println("Question Verification Successful..");
+					model.addAttribute("cust", own.getUserId());
+				} else {
+					String msg = "Hi Enter Valid Ques and Ans";
+					System.out.println(owner);
+					model.addAttribute("cust", msg);
+				}
 			}
 		} else {
-			String msg = "Hi !" + name + " Mobile_no " + mobile + " No Details Found !";
+			String msg = "Hi !" + owner.getName() + " Mobile_no " + owner.getMobile() + " No Details Found !";
 			model.addAttribute("cust", msg);
 		}
 		return "Owner/ownerDetails";
 	}
 
 	@RequestMapping("updateOwnPass")
-	private String updatePass(Model model, Owner owner) {
-		ownerRepo.saveAndFlush(owner);
-		model.addAttribute("cust", owner.getPass());
+	private String updatePass(Model model, @RequestParam int id,String pass) {
+		List<Owner> list = ownerRepo.findById(id);
+		if (list.size() != 0) {
+			for (Owner li : list) {
+				if (li.getPass().equals(pass)) {
+					String mes = "password can't be same as previouse one : " + pass;
+					System.out.println(mes);
+					model.addAttribute("cust", mes);
+				} else {
+					Owner own = ownerRepo.findById(id).get(0);
+					own.setPass(pass);
+					ownerRepo.saveAndFlush(own);
+					String mes = "Password Successfully Updated for User : "+li.getUserId();
+					System.out.println(mes);
+					model.addAttribute("cust", mes);
+				}
+			}
+		}
 		return "Owner/ownerDetails";
 	}
 
