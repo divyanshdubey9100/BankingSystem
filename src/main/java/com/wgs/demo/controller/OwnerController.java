@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -56,11 +57,6 @@ public class OwnerController {
 	@Autowired
 	AdminUpdateRepo adminUpdateRepo;
 
-	@RequestMapping("ownLogin")
-	private String ownerLogin() {
-		return "Owner/login";
-	}
-
 	@RequestMapping("regOwn")
 	private String createOwnAcc() {
 		return "Owner/openAccount";
@@ -85,9 +81,14 @@ public class OwnerController {
 		}
 		return "Owner/ownerDetails";
 	}
+	
+	@RequestMapping("ownLogin")
+	private String ownerLogin() {
+		return "Owner/login";
+	}
 
 	@RequestMapping("ownAuth")
-	private String ownerAuthentication(@RequestParam String userId, @RequestParam String pass, Model model, Owner owner,
+	private String ownerAuthentication(@RequestParam String userId, @RequestParam String pass, Model model,
 			HttpSession session) {
 		if (ownerImpl.ownerAuthintication(userId, pass) == true) {
 			List<Owner> list = ownerImpl.findByuId(userId);
@@ -96,11 +97,40 @@ public class OwnerController {
 				session.setAttribute("ownId", own.getId());
 				session.setAttribute("ownUserId", own.getUserId());
 			}
-			return "redirect:/own";
+			return "Owner/ownQuesVerification";
 		} else {
 			return "redirect:/ownLogin";
 		}
 	}
+
+	@RequestMapping("ownVerificationViaQues")
+	private String ownLoginVerify(Owner owner, HttpSession session, Model model) {
+		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
+				|| session.getAttribute("ownUserId") == null) {
+			return "redirect:/ownLogin";
+		}
+		List<Owner> list=ownerImpl.findByuId(session.getAttribute("ownUserId").toString());
+		if (list.size() != 0) {
+			System.out.println("Record Found " + list.size());
+			System.out.println(list);
+			for (Owner own : list) {
+				if (owner.getQues1().equals(own.getQues1()) && owner.getAns1().equals(own.getAns1())
+						&& owner.getQues2().equals(own.getQues2()) && owner.getAns2().equals(own.getAns2())) {
+					System.out.println("Question Verification Successful..");
+					return "redirect:/own";
+				} else {
+					String msg = "Hi Enter Valid Ques and Ans";
+					System.out.println(owner);
+					model.addAttribute("cust", msg);
+				}
+			}
+		} else {
+			String msg = "Hi !" + owner.getName() + " Mobile_no " + owner.getMobile() + " No Details Found !";
+			model.addAttribute("cust", msg);
+		}
+		return "Owner/ownerDetails";
+	}
+
 
 	@RequestMapping("own")
 	private String ownerUi(Model model, HttpSession session) {
@@ -176,36 +206,70 @@ public class OwnerController {
 	}
 
 	@RequestMapping("resetOwnPass")
-	private String forgetPwd(@RequestParam String mobile, String userId, Model model) {
-		List<Owner> list = ownerImpl.findMailAndMobile(userId, mobile);
+	private String forgetPwd(Owner owner, Model model) {
+		List<Owner> list = ownerImpl.findMailAndMobile(owner.getUserId(), owner.getMobile());
 		if (list.size() != 0) {
-			model.addAttribute("cust", list);
-			return "Owner/resetOwnPass";
+			System.out.println("Record Found " + list.size());
+			for (Owner own : list) {
+				if (owner.getQues1().equals(own.getQues1()) && owner.getAns1().equals(own.getAns1())
+						&& owner.getQues2().equals(own.getQues2()) && owner.getAns2().equals(own.getAns2())) {
+					System.out.println("Question Verification Successful..");
+					model.addAttribute("cust", list);
+					return "Owner/resetOwnPass";
+				} else {
+					String msg = "Hi Enter Valid Ques and Ans";
+					model.addAttribute("cust", msg);
+				}
+			}
 		} else {
-			String msg = "Hi " + userId + " Mobile_no " + mobile + " No Details Found !";
+			String msg = "Hi " + owner.getUserId() + " Mobile_no " + owner.getMobile() + " No Details Found !";
 			model.addAttribute("cust", msg);
 		}
 		return "Owner/ownerDetails";
 	}
 
 	@RequestMapping("resetOwnMail")
-	private String findOwnMail(@RequestParam String name, String mobile, Model model) {
-		List<Owner> list = ownerImpl.findUidAndMobile(name, mobile);
+	private String findOwnMail(Owner owner, Model model) {
+		List<Owner> list = ownerImpl.findUidAndMobile(owner.getName(), owner.getMobile());
 		if (list.size() != 0) {
+			System.out.println("Record Found " + list.size());
 			for (Owner own : list) {
-				model.addAttribute("cust", own.getUserId());
+				if (owner.getQues1().equals(own.getQues1()) && owner.getAns1().equals(own.getAns1())
+						&& owner.getQues2().equals(own.getQues2()) && owner.getAns2().equals(own.getAns2())) {
+					System.out.println("Question Verification Successful..");
+					model.addAttribute("cust", own.getUserId());
+				} else {
+					String msg = "Hi Enter Valid Ques and Ans";
+					System.out.println(owner);
+					model.addAttribute("cust", msg);
+				}
 			}
 		} else {
-			String msg = "Hi !" + name + " Mobile_no " + mobile + " No Details Found !";
+			String msg = "Hi !" + owner.getName() + " Mobile_no " + owner.getMobile() + " No Details Found !";
 			model.addAttribute("cust", msg);
 		}
 		return "Owner/ownerDetails";
 	}
 
 	@RequestMapping("updateOwnPass")
-	private String updatePass(Model model, Owner owner) {
-		ownerRepo.saveAndFlush(owner);
-		model.addAttribute("cust", owner.getPass());
+	private String updatePass(Model model, @RequestParam int id,String pass) {
+		List<Owner> list = ownerRepo.findById(id);
+		if (list.size() != 0) {
+			for (Owner li : list) {
+				if (li.getPass().equals(pass)) {
+					String mes = "password can't be same as previouse one : " + pass;
+					System.out.println(mes);
+					model.addAttribute("cust", mes);
+				} else {
+					Owner own = ownerRepo.findById(id).get(0);
+					own.setPass(pass);
+					ownerRepo.saveAndFlush(own);
+					String mes = "Password Successfully Updated for User : "+li.getUserId();
+					System.out.println(mes);
+					model.addAttribute("cust", mes);
+				}
+			}
+		}
 		return "Owner/ownerDetails";
 	}
 
