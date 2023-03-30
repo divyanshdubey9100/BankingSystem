@@ -16,7 +16,7 @@ import com.wgs.demo.classes.AdminReg;
 import com.wgs.demo.classes.AdminRegReq;
 import com.wgs.demo.classes.AdminUpdateReq;
 import com.wgs.demo.classes.Customer;
-import com.wgs.demo.classes.IndividualCustomer;
+import com.wgs.demo.classes.Passbook;
 import com.wgs.demo.impl.AdminImpl;
 import com.wgs.demo.impl.CustReqImpl;
 import com.wgs.demo.impl.MethodImpl;
@@ -26,7 +26,7 @@ import com.wgs.demo.repo.AdminRegReqRepo;
 import com.wgs.demo.repo.AdminUpdateRepo;
 import com.wgs.demo.repo.CustRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
-import com.wgs.demo.repo.IndividualTrxRepo;
+import com.wgs.demo.repo.PassbookRepo;
 
 @Controller
 public class AdminController {
@@ -41,7 +41,7 @@ public class AdminController {
 	@Autowired
 	AdminImpl adminImpl;
 	@Autowired
-	IndividualTrxRepo trxRepo;
+	PassbookRepo pbookRepo;
 	@Autowired
 	CustReqImpl custReqImpl;
 	@Autowired
@@ -53,7 +53,7 @@ public class AdminController {
 	@Autowired
 	CustReqImpl reqImpl;
 	@Autowired
-	AdminUpdateRepo adminUpdateRepo;
+	AdminUpdateRepo adminUpdateRepo;;
 
 	@RequestMapping("adminLogin")
 	private String adminLogin() {
@@ -414,7 +414,7 @@ public class AdminController {
 	}
 
 	@RequestMapping("deposit")
-	private String deposit(Customer customer, Model model, HttpSession session, IndividualCustomer indivCust) {
+	private String deposit(Customer customer, Model model, HttpSession session, Passbook passbook) {
 		if (session.getAttribute("name") == null || adminImpl.isIdExists((int) session.getAttribute("id")) == false) {
 			return "redirect:/adminLogin";
 		}
@@ -424,18 +424,20 @@ public class AdminController {
 				if (impl.isAccExists(customer.getAccno()) == true) {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss")
 							.format(Calendar.getInstance().getTime());
-					int trxId = 1 + impl.trxIdGen(customer.getAccno());
-					indivCust.setTrxId(trxId);
-					indivCust.setCustName(cust.getName());
-					indivCust.setAccNo(cust.getAccno());
-					indivCust.setAmtBefTrx(cust.getBalance());
-					indivCust.setTrxAmt(customer.getBalance());
+					String trxId = impl.trxIdGen(customer.getAccno());
+					System.out.println("trxid generated "+trxId);
+					passbook.setTrxId(trxId);
+					passbook.setCustName(cust.getName());
+					passbook.setAccNo(cust.getAccno());
+					passbook.setAmtBefTrx(cust.getBalance());
+					passbook.setTrxAmt(customer.getBalance());
 					int newAmount = cust.getBalance() + customer.getBalance();
-					indivCust.setCurrentBalance(newAmount);
-					indivCust.setTrxDate(timeStamp);
-					indivCust.setTrxMode("Credit");
+					passbook.setCurrentBalance(newAmount);
+					passbook.setTrxDate(timeStamp);
+					passbook.setTrxMode("Credit");
 					cust.setBalance(newAmount);
-					trxRepo.saveAndFlush(indivCust);
+					Passbook pass=pbookRepo.saveAndFlush(passbook);
+					System.out.println("Value of Passook "+pass);
 					String msg = "Hi " + cust.getName() + " " + customer.getBalance()
 							+ " is Successfully Deposited in A/c : " + cust.getAccno() + " Updated Balance is "
 							+ cust.getBalance();
@@ -451,7 +453,7 @@ public class AdminController {
 	}
 
 	@RequestMapping("withdraw")
-	private String withdraw(Customer customer, Model model, HttpSession session, IndividualCustomer indivCust) {
+	private String withdraw(Customer customer, Model model, HttpSession session, Passbook passbook) {
 		if (session.getAttribute("name") == null || adminImpl.isIdExists((int) session.getAttribute("id")) == false) {
 			return "redirect:/adminLogin";
 		}
@@ -461,18 +463,20 @@ public class AdminController {
 				if ((cust.getBalance() - customer.getBalance()) > 1000 && cust.getBalance() > customer.getBalance()) {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss")
 							.format(Calendar.getInstance().getTime());
-					int trxId = 1 + impl.trxIdGen(customer.getAccno());
-					indivCust.setTrxId(trxId);
-					indivCust.setCustName(cust.getName());
-					indivCust.setAccNo(cust.getAccno());
-					indivCust.setAmtBefTrx(cust.getBalance());
-					indivCust.setTrxAmt(customer.getBalance());
+					String trxId = impl.trxIdGen(customer.getAccno());
+					System.out.println("trx id generated Successfully"+trxId);
+					passbook.setTrxId(trxId);
+					passbook.setCustName(cust.getName());
+					passbook.setAccNo(cust.getAccno());
+					passbook.setAmtBefTrx(cust.getBalance());
+					passbook.setTrxAmt(customer.getBalance());
 					int newAmount = cust.getBalance() - customer.getBalance();
-					indivCust.setCurrentBalance(newAmount);
-					indivCust.setTrxDate(timeStamp);
-					indivCust.setTrxMode("Debit");
+					passbook.setCurrentBalance(newAmount);
+					passbook.setTrxDate(timeStamp);
+					passbook.setTrxMode("Debit");
 					cust.setBalance(newAmount);
-					trxRepo.saveAndFlush(indivCust);
+					Passbook pass=pbookRepo.saveAndFlush(passbook);
+					System.out.println("Value of Passook "+pass);
 					String msg = "Hi : " + cust.getName() + " : " + customer.getBalance()
 							+ " is Successfully Withdrawn in a/c : " + cust.getAccno() + " Updated Balance is : "
 							+ cust.getBalance();
@@ -579,7 +583,7 @@ public class AdminController {
 		if (session.getAttribute("name") == null || adminImpl.isIdExists((int) session.getAttribute("id")) == false) {
 			return "redirect:/adminLogin";
 		}
-		List<IndividualCustomer> list = trxRepo.findByAccNo(customer.getAccno());
+		List<Passbook> list = pbookRepo.findByAccNo(customer.getAccno());
 		model.addAttribute("cust", list);
 		return "Admin/customerPassbook";
 	}

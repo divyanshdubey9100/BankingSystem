@@ -1,17 +1,21 @@
 package com.wgs.demo.classes;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.springframework.stereotype.Component;
-@Table(name = "IndividualCustomer", uniqueConstraints = @UniqueConstraint(columnNames = { "trxId" }))
+@Table(name = "passbook", uniqueConstraints = @UniqueConstraint(columnNames = { "trxId" }))
 @Entity
 @Component
-public class IndividualCustomer {
+public class Passbook {
 	@Id
-	private int trxId;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;
+	private String trxId;
 	private int accNo;
 	private String custName;
 	private String trxMode;
@@ -19,13 +23,14 @@ public class IndividualCustomer {
 	private int amtBefTrx;
 	private int trxAmt;
 	private int currentBalance;
-	public IndividualCustomer() {
+	public Passbook() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public IndividualCustomer(int trxId, int accNo, String custName, String trxMode, String trxDate, int amtBefTrx,
+	public Passbook(int id,String trxId, int accNo, String custName, String trxMode, String trxDate, int amtBefTrx,
 			int trxAmt, int currentBalance) {
 		super();
+		this.id=id;
 		this.trxId = trxId;
 		this.accNo = accNo;
 		this.custName = custName;
@@ -35,10 +40,18 @@ public class IndividualCustomer {
 		this.trxAmt = trxAmt;
 		this.currentBalance = currentBalance;
 	}
-	public int getTrxId() {
+	
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getTrxId() {
 		return trxId;
 	}
-	public void setTrxId(int trxId) {
+	public void setTrxId(String trxId) {
 		this.trxId = trxId;
 	}
 	public int getAccNo() {
@@ -85,7 +98,7 @@ public class IndividualCustomer {
 	}
 	@Override
 	public String toString() {
-		return "IndividualCustomer [trxId=" + trxId + ", accNo=" + accNo + ", custName=" + custName + ", trxMode="
+		return "IndividualCustomer [id=" + id + ",trxId=" + trxId + ", accNo=" + accNo + ", custName=" + custName + ", trxMode="
 				+ trxMode + ", trxDate=" + trxDate + ", amtBefTrx=" + amtBefTrx + ", trxAmt=" + trxAmt
 				+ ", currentBalance=" + currentBalance + "]";
 	}

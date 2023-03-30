@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wgs.demo.classes.Customer;
-import com.wgs.demo.classes.CustomerReqReq;
-import com.wgs.demo.classes.IndividualCustomer;
+import com.wgs.demo.classes.CustomerRegReq;
+import com.wgs.demo.classes.Passbook;
 import com.wgs.demo.impl.CustReqImpl;
 import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.repo.AdminRegRepo;
 import com.wgs.demo.repo.CustRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
-import com.wgs.demo.repo.IndividualTrxRepo;
+import com.wgs.demo.repo.PassbookRepo;
 
 @Controller
 public class CustomerController {
@@ -33,7 +33,7 @@ public class CustomerController {
 	@Autowired
 	CustReqImpl reqImpl;
 	@Autowired
-	IndividualTrxRepo trxRepo;
+	PassbookRepo pbookRepo;
 	@Autowired
 	CustRegReqRepo reqRepo;
 	@Autowired
@@ -87,7 +87,7 @@ public class CustomerController {
 			return "redirect:/customerLogin";
 		}
 		int accNo=(int) session.getAttribute("custAccno");
-		List<IndividualCustomer> list=trxRepo.findByAccNo(accNo);
+		List<Passbook> list=pbookRepo.findByAccNo(accNo);
 		model.addAttribute("cust", list);
 		return "Customer/custAccStmt";
 	}
@@ -153,7 +153,7 @@ public class CustomerController {
 	}
 
 	@RequestMapping("custWithdraw")
-	private String withdraw(Customer customer, Model model, HttpSession session,IndividualCustomer indivCust) {
+	private String withdraw(Customer customer, Model model, HttpSession session,Passbook passbook) {
 		if (session.getAttribute("custName") == null && session.getAttribute("custAccno") == null) {
 			return "redirect:/customerLogin";
 		}
@@ -162,18 +162,19 @@ public class CustomerController {
 			for (Customer cust : custList) {
 				if ((cust.getBalance() - customer.getBalance()) >= 1000 && cust.getBalance() > customer.getBalance()) {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss").format(Calendar.getInstance().getTime());
-					int trxId=1+impl.trxIdGen(customer.getAccno());
-					indivCust.setTrxId(trxId);
-					indivCust.setCustName(cust.getName());
-					indivCust.setAccNo(cust.getAccno());
-					indivCust.setAmtBefTrx(cust.getBalance());
-					indivCust.setTrxAmt(customer.getBalance());
+					String trxId=impl.trxIdGen(customer.getAccno());
+					passbook.setTrxId(trxId);
+					passbook.setCustName(cust.getName());
+					passbook.setAccNo(cust.getAccno());
+					passbook.setAmtBefTrx(cust.getBalance());
+					passbook.setTrxAmt(customer.getBalance());
 					int newAmount = cust.getBalance() - customer.getBalance();
-					indivCust.setCurrentBalance(newAmount);
-					indivCust.setTrxDate(timeStamp);
-					indivCust.setTrxMode("Debit");
+					passbook.setCurrentBalance(newAmount);
+					passbook.setTrxDate(timeStamp);
+					passbook.setTrxMode("Debit");
 					cust.setBalance(newAmount);
-					trxRepo.saveAndFlush(indivCust);
+					Passbook pass=pbookRepo.saveAndFlush(passbook);
+					System.out.println("Value of Passook "+pass);
 					String msg = "Hi : " + cust.getName() + " : " + customer.getBalance()
 							+ " is Successfully Withdrawn in a/c : " + cust.getAccno() + " Updated Balance is : "
 							+ cust.getBalance();
@@ -209,7 +210,7 @@ public class CustomerController {
 	}
 
 	@RequestMapping("custDeposit")
-	private String deposit(Customer customer, Model model, HttpSession session,IndividualCustomer indivCust) {
+	private String deposit(Customer customer, Model model, HttpSession session,Passbook passbook) {
 		if (session.getAttribute("custName") == null && session.getAttribute("custAccno") == null) {
 			return "redirect:/customerLogin";
 		}
@@ -218,18 +219,19 @@ public class CustomerController {
 			for (Customer cust : custList) {
 				if (impl.isAccExists(customer.getAccno()) == true) {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss").format(Calendar.getInstance().getTime());
-					int trxId=impl.trxIdGen(customer.getAccno());
-					indivCust.setTrxId(trxId);
-					indivCust.setCustName(cust.getName());
-					indivCust.setAccNo(cust.getAccno());
-					indivCust.setAmtBefTrx(cust.getBalance());
-					indivCust.setTrxAmt(customer.getBalance());
+					String trxId=impl.trxIdGen(customer.getAccno());
+					passbook.setTrxId(trxId);
+					passbook.setCustName(cust.getName());
+					passbook.setAccNo(cust.getAccno());
+					passbook.setAmtBefTrx(cust.getBalance());
+					passbook.setTrxAmt(customer.getBalance());
 					int newAmount = cust.getBalance() + customer.getBalance();
-					indivCust.setCurrentBalance(newAmount);
-					indivCust.setTrxDate(timeStamp);
-					indivCust.setTrxMode("Credit");
+					passbook.setCurrentBalance(newAmount);
+					passbook.setTrxDate(timeStamp);
+					passbook.setTrxMode("Credit");
 					cust.setBalance(newAmount);
-					trxRepo.saveAndFlush(indivCust);
+					Passbook pass=pbookRepo.saveAndFlush(passbook);
+					System.out.println("Value of Passook "+pass);
 					String msg = "Hi " + cust.getName() + " " + customer.getBalance()
 							+ " is Successfully Deposited in A/c : " + cust.getAccno() + " Updated Balance is "
 							+ cust.getBalance();
@@ -280,7 +282,7 @@ public class CustomerController {
 		return "Customer/openCustomerAccount";
 	}
 	@RequestMapping("submitCustAccReq")
-	private String submitCustomerAccReq(CustomerReqReq custReq, Model model, HttpSession session) {
+	private String submitCustomerAccReq(CustomerRegReq custReq, Model model, HttpSession session) {
 		int accRefNo = 1000 + reqImpl.getTokenId();
 		int accno=reqImpl.generateNewAccNo(accRefNo);
 //		System.out.println("Refno "+accRefNo+" accno "+accno);
