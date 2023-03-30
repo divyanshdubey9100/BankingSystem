@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
-import javax.websocket.Session;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wgs.demo.classes.AdminReg;
 import com.wgs.demo.classes.Customer;
-import com.wgs.demo.classes.IndividualCustomer;
 import com.wgs.demo.classes.Owner;
+import com.wgs.demo.classes.Passbook;
 import com.wgs.demo.impl.AdminImpl;
 import com.wgs.demo.impl.AdminReqImpl;
 import com.wgs.demo.impl.CustReqImpl;
@@ -27,8 +26,8 @@ import com.wgs.demo.repo.AdminRegReqRepo;
 import com.wgs.demo.repo.AdminUpdateRepo;
 import com.wgs.demo.repo.CustRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
-import com.wgs.demo.repo.IndividualTrxRepo;
 import com.wgs.demo.repo.OwnerRepo;
+import com.wgs.demo.repo.PassbookRepo;
 
 @Controller
 public class OwnerController {
@@ -43,7 +42,7 @@ public class OwnerController {
 	@Autowired
 	CustRepo custRepo;
 	@Autowired
-	IndividualTrxRepo trxRepo;
+	PassbookRepo pbookRepo;
 	@Autowired
 	AdminRegRepo adminRepo;
 	@Autowired
@@ -428,7 +427,7 @@ public class OwnerController {
 	}
 
 	@RequestMapping("ownDeposit")
-	private String ownDeposit(Customer customer, Model model, HttpSession session, IndividualCustomer indivCust) {
+	private String ownDeposit(Customer customer, Model model, HttpSession session, Passbook indivCust) {
 		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
 				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
@@ -439,7 +438,7 @@ public class OwnerController {
 				if (impl.isAccExists(customer.getAccno()) == true) {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss")
 							.format(Calendar.getInstance().getTime());
-					int trxId = 1 + impl.trxIdGen(customer.getAccno());
+					String trxId = impl.trxIdGen(customer.getAccno());
 					indivCust.setTrxId(trxId);
 					indivCust.setCustName(cust.getName());
 					indivCust.setAccNo(cust.getAccno());
@@ -450,7 +449,7 @@ public class OwnerController {
 					indivCust.setTrxDate(timeStamp);
 					indivCust.setTrxMode("Credit");
 					cust.setBalance(newAmount);
-					trxRepo.saveAndFlush(indivCust);
+					pbookRepo.saveAndFlush(indivCust);
 					String msg = "Hi " + cust.getName() + " " + customer.getBalance()
 							+ " is Successfully Deposited in A/c : " + cust.getAccno() + " Updated Balance is "
 							+ cust.getBalance();
@@ -466,7 +465,7 @@ public class OwnerController {
 	}
 
 	@RequestMapping("ownWithdraw")
-	private String withdraw(Customer customer, Model model, HttpSession session, IndividualCustomer indivCust) {
+	private String withdraw(Customer customer, Model model, HttpSession session, Passbook indivCust) {
 		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
 				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
@@ -477,7 +476,7 @@ public class OwnerController {
 				if ((cust.getBalance() - customer.getBalance()) > 1000 && cust.getBalance() > customer.getBalance()) {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss")
 							.format(Calendar.getInstance().getTime());
-					int trxId = 1 + impl.trxIdGen(customer.getAccno());
+					String trxId = impl.trxIdGen(customer.getAccno());
 					indivCust.setTrxId(trxId);
 					indivCust.setCustName(cust.getName());
 					indivCust.setAccNo(cust.getAccno());
@@ -488,7 +487,7 @@ public class OwnerController {
 					indivCust.setTrxDate(timeStamp);
 					indivCust.setTrxMode("Debit");
 					cust.setBalance(newAmount);
-					trxRepo.saveAndFlush(indivCust);
+					pbookRepo.saveAndFlush(indivCust);
 					String msg = "Hi : " + cust.getName() + " : " + customer.getBalance()
 							+ " is Successfully Withdrawn in a/c : " + cust.getAccno() + " Updated Balance is : "
 							+ cust.getBalance();
@@ -551,7 +550,7 @@ public class OwnerController {
 				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
-		List<IndividualCustomer> list = trxRepo.findByAccNo(customer.getAccno());
+		List<Passbook> list = pbookRepo.findByAccNo(customer.getAccno());
 		model.addAttribute("cust", list);
 		return "Owner/customerPassbook";
 	}

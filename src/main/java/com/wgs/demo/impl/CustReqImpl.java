@@ -34,7 +34,7 @@ public class CustReqImpl {
 	public int generateNewAccNo(int accno) {
 		for(Customer accList:custRepo.findAll()) {
 			if(accList.getAccno()==accno) {
-//				System.out.println(accno +" in if block methodImpl");
+				System.out.println(accno +" in if block methodImpl");
 				accno ++;
 				generateNewAccNo(accno);
 			}

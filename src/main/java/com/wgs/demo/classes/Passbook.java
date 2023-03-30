@@ -6,12 +6,12 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.springframework.stereotype.Component;
-@Table(name = "IndividualCustomer", uniqueConstraints = @UniqueConstraint(columnNames = { "trxId" }))
+@Table(name = "passbook", uniqueConstraints = @UniqueConstraint(columnNames = { "trxId" }))
 @Entity
 @Component
-public class IndividualCustomer {
+public class Passbook {
 	@Id
-	private int trxId;
+	private String trxId;
 	private int accNo;
 	private String custName;
 	private String trxMode;
@@ -19,11 +19,11 @@ public class IndividualCustomer {
 	private int amtBefTrx;
 	private int trxAmt;
 	private int currentBalance;
-	public IndividualCustomer() {
+	public Passbook() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public IndividualCustomer(int trxId, int accNo, String custName, String trxMode, String trxDate, int amtBefTrx,
+	public Passbook(String trxId, int accNo, String custName, String trxMode, String trxDate, int amtBefTrx,
 			int trxAmt, int currentBalance) {
 		super();
 		this.trxId = trxId;
@@ -35,10 +35,10 @@ public class IndividualCustomer {
 		this.trxAmt = trxAmt;
 		this.currentBalance = currentBalance;
 	}
-	public int getTrxId() {
+	public String getTrxId() {
 		return trxId;
 	}
-	public void setTrxId(int trxId) {
+	public void setTrxId(String trxId) {
 		this.trxId = trxId;
 	}
 	public int getAccNo() {

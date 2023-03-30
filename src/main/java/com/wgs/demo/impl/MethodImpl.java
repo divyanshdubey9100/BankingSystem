@@ -7,18 +7,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.wgs.demo.classes.AdminReg;
 import com.wgs.demo.classes.Customer;
-import com.wgs.demo.repo.AdminUpdateRepo;
 import com.wgs.demo.repo.CustRepo;
-import com.wgs.demo.repo.IndividualTrxRepo;
+import com.wgs.demo.repo.PassbookRepo;
 
 @Component
 public class MethodImpl {
 	@Autowired
 	CustRepo custRepo;
 	@Autowired
-	IndividualTrxRepo trxRepo;
+	PassbookRepo pbookRepo;
+	private static int incr=1;
 
 	public boolean isAccExists(int accno) {
 		boolean acc = custRepo.existsById(accno);
@@ -88,13 +87,13 @@ public class MethodImpl {
 	}
 
 	public int getTrxToken() {
-		return (int) trxRepo.count();
+		return (int) pbookRepo.count();
 	}
 
-	public int trxIdGen(int accno) {
-		String timeStamp = new SimpleDateFormat("ddMMhhmm").format(Calendar.getInstance().getTime());
-		int time=Integer.parseInt(timeStamp);
-		return getTrxToken() *accno+time;
+	public String trxIdGen(int accno) {
+		String time = new SimpleDateFormat("yyyyMMddhhmmss").format(Calendar.getInstance().getTime());
+		String id=time+accno+incr++;
+		return id;
 	}
 
 }
