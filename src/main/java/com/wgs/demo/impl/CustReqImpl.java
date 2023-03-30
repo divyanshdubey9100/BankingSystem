@@ -5,9 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.wgs.demo.classes.AdminRegReq;
 import com.wgs.demo.classes.Customer;
-import com.wgs.demo.classes.CustomerReqReq;
+import com.wgs.demo.classes.CustomerRegReq;
 import com.wgs.demo.repo.CustRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
 
@@ -61,7 +60,7 @@ public class CustReqImpl {
 		}
 	}
 	
-	public List<CustomerReqReq> findAllReq(){
+	public List<CustomerRegReq> findAllReq(){
 		return reqRepo.findAll();
 	}
 

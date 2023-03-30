@@ -436,7 +436,8 @@ public class AdminController {
 					passbook.setTrxDate(timeStamp);
 					passbook.setTrxMode("Credit");
 					cust.setBalance(newAmount);
-					pbookRepo.saveAndFlush(passbook);
+					Passbook pass=pbookRepo.saveAndFlush(passbook);
+					System.out.println("Value of Passook "+pass);
 					String msg = "Hi " + cust.getName() + " " + customer.getBalance()
 							+ " is Successfully Deposited in A/c : " + cust.getAccno() + " Updated Balance is "
 							+ cust.getBalance();
@@ -474,7 +475,8 @@ public class AdminController {
 					passbook.setTrxDate(timeStamp);
 					passbook.setTrxMode("Debit");
 					cust.setBalance(newAmount);
-					pbookRepo.saveAndFlush(passbook);
+					Passbook pass=pbookRepo.saveAndFlush(passbook);
+					System.out.println("Value of Passook "+pass);
 					String msg = "Hi : " + cust.getName() + " : " + customer.getBalance()
 							+ " is Successfully Withdrawn in a/c : " + cust.getAccno() + " Updated Balance is : "
 							+ cust.getBalance();

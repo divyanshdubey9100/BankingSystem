@@ -2,9 +2,9 @@ package com.wgs.demo.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.wgs.demo.classes.CustomerReqReq;
+import com.wgs.demo.classes.CustomerRegReq;
 
-public interface CustRegReqRepo extends JpaRepository<CustomerReqReq, Integer> {
+public interface CustRegReqRepo extends JpaRepository<CustomerRegReq, Integer> {
 
 	boolean existsByMobile(String mobile);
 

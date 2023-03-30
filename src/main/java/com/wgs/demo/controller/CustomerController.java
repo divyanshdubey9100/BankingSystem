@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.wgs.demo.classes.Customer;
-import com.wgs.demo.classes.CustomerReqReq;
+import com.wgs.demo.classes.CustomerRegReq;
 import com.wgs.demo.classes.Passbook;
 import com.wgs.demo.impl.CustReqImpl;
 import com.wgs.demo.impl.MethodImpl;
@@ -173,7 +173,8 @@ public class CustomerController {
 					passbook.setTrxDate(timeStamp);
 					passbook.setTrxMode("Debit");
 					cust.setBalance(newAmount);
-					pbookRepo.saveAndFlush(passbook);
+					Passbook pass=pbookRepo.saveAndFlush(passbook);
+					System.out.println("Value of Passook "+pass);
 					String msg = "Hi : " + cust.getName() + " : " + customer.getBalance()
 							+ " is Successfully Withdrawn in a/c : " + cust.getAccno() + " Updated Balance is : "
 							+ cust.getBalance();
@@ -229,7 +230,8 @@ public class CustomerController {
 					passbook.setTrxDate(timeStamp);
 					passbook.setTrxMode("Credit");
 					cust.setBalance(newAmount);
-					pbookRepo.saveAndFlush(passbook);
+					Passbook pass=pbookRepo.saveAndFlush(passbook);
+					System.out.println("Value of Passook "+pass);
 					String msg = "Hi " + cust.getName() + " " + customer.getBalance()
 							+ " is Successfully Deposited in A/c : " + cust.getAccno() + " Updated Balance is "
 							+ cust.getBalance();
@@ -280,7 +282,7 @@ public class CustomerController {
 		return "Customer/openCustomerAccount";
 	}
 	@RequestMapping("submitCustAccReq")
-	private String submitCustomerAccReq(CustomerReqReq custReq, Model model, HttpSession session) {
+	private String submitCustomerAccReq(CustomerRegReq custReq, Model model, HttpSession session) {
 		int accRefNo = 1000 + reqImpl.getTokenId();
 		int accno=reqImpl.generateNewAccNo(accRefNo);
 //		System.out.println("Refno "+accRefNo+" accno "+accno);

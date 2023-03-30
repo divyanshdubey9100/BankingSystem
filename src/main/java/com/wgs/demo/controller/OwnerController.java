@@ -427,7 +427,7 @@ public class OwnerController {
 	}
 
 	@RequestMapping("ownDeposit")
-	private String ownDeposit(Customer customer, Model model, HttpSession session, Passbook indivCust) {
+	private String ownDeposit(Customer customer, Model model, HttpSession session, Passbook passbook) {
 		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
 				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
@@ -439,17 +439,18 @@ public class OwnerController {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss")
 							.format(Calendar.getInstance().getTime());
 					String trxId = impl.trxIdGen(customer.getAccno());
-					indivCust.setTrxId(trxId);
-					indivCust.setCustName(cust.getName());
-					indivCust.setAccNo(cust.getAccno());
-					indivCust.setAmtBefTrx(cust.getBalance());
-					indivCust.setTrxAmt(customer.getBalance());
+					passbook.setTrxId(trxId);
+					passbook.setCustName(cust.getName());
+					passbook.setAccNo(cust.getAccno());
+					passbook.setAmtBefTrx(cust.getBalance());
+					passbook.setTrxAmt(customer.getBalance());
 					int newAmount = cust.getBalance() + customer.getBalance();
-					indivCust.setCurrentBalance(newAmount);
-					indivCust.setTrxDate(timeStamp);
-					indivCust.setTrxMode("Credit");
+					passbook.setCurrentBalance(newAmount);
+					passbook.setTrxDate(timeStamp);
+					passbook.setTrxMode("Credit");
 					cust.setBalance(newAmount);
-					pbookRepo.saveAndFlush(indivCust);
+					Passbook pass=pbookRepo.saveAndFlush(passbook);
+					System.out.println("Value of Passook "+pass);
 					String msg = "Hi " + cust.getName() + " " + customer.getBalance()
 							+ " is Successfully Deposited in A/c : " + cust.getAccno() + " Updated Balance is "
 							+ cust.getBalance();
@@ -465,7 +466,7 @@ public class OwnerController {
 	}
 
 	@RequestMapping("ownWithdraw")
-	private String withdraw(Customer customer, Model model, HttpSession session, Passbook indivCust) {
+	private String withdraw(Customer customer, Model model, HttpSession session, Passbook passbook) {
 		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
 				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
@@ -477,17 +478,18 @@ public class OwnerController {
 					String timeStamp = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss")
 							.format(Calendar.getInstance().getTime());
 					String trxId = impl.trxIdGen(customer.getAccno());
-					indivCust.setTrxId(trxId);
-					indivCust.setCustName(cust.getName());
-					indivCust.setAccNo(cust.getAccno());
-					indivCust.setAmtBefTrx(cust.getBalance());
-					indivCust.setTrxAmt(customer.getBalance());
+					passbook.setTrxId(trxId);
+					passbook.setCustName(cust.getName());
+					passbook.setAccNo(cust.getAccno());
+					passbook.setAmtBefTrx(cust.getBalance());
+					passbook.setTrxAmt(customer.getBalance());
 					int newAmount = cust.getBalance() - customer.getBalance();
-					indivCust.setCurrentBalance(newAmount);
-					indivCust.setTrxDate(timeStamp);
-					indivCust.setTrxMode("Debit");
+					passbook.setCurrentBalance(newAmount);
+					passbook.setTrxDate(timeStamp);
+					passbook.setTrxMode("Debit");
 					cust.setBalance(newAmount);
-					pbookRepo.saveAndFlush(indivCust);
+					Passbook pass=pbookRepo.saveAndFlush(passbook);
+					System.out.println("Value of Passook "+pass);
 					String msg = "Hi : " + cust.getName() + " : " + customer.getBalance()
 							+ " is Successfully Withdrawn in a/c : " + cust.getAccno() + " Updated Balance is : "
 							+ cust.getBalance();

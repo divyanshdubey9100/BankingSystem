@@ -1,6 +1,8 @@
 package com.wgs.demo.classes;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class Passbook {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;
 	private String trxId;
 	private int accNo;
 	private String custName;
@@ -23,9 +27,10 @@ public class Passbook {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Passbook(String trxId, int accNo, String custName, String trxMode, String trxDate, int amtBefTrx,
+	public Passbook(int id,String trxId, int accNo, String custName, String trxMode, String trxDate, int amtBefTrx,
 			int trxAmt, int currentBalance) {
 		super();
+		this.id=id;
 		this.trxId = trxId;
 		this.accNo = accNo;
 		this.custName = custName;
@@ -34,6 +39,14 @@ public class Passbook {
 		this.amtBefTrx = amtBefTrx;
 		this.trxAmt = trxAmt;
 		this.currentBalance = currentBalance;
+	}
+	
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 	public String getTrxId() {
 		return trxId;
@@ -85,7 +98,7 @@ public class Passbook {
 	}
 	@Override
 	public String toString() {
-		return "IndividualCustomer [trxId=" + trxId + ", accNo=" + accNo + ", custName=" + custName + ", trxMode="
+		return "IndividualCustomer [id=" + id + ",trxId=" + trxId + ", accNo=" + accNo + ", custName=" + custName + ", trxMode="
 				+ trxMode + ", trxDate=" + trxDate + ", amtBefTrx=" + amtBefTrx + ", trxAmt=" + trxAmt
 				+ ", currentBalance=" + currentBalance + "]";
 	}
