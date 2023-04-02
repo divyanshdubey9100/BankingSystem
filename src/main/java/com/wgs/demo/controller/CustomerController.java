@@ -17,15 +17,13 @@ import com.wgs.demo.classes.CustomerRegReq;
 import com.wgs.demo.classes.Passbook;
 import com.wgs.demo.impl.CustReqImpl;
 import com.wgs.demo.impl.MethodImpl;
-import com.wgs.demo.repo.AdminRegRepo;
+import com.wgs.demo.repo.AdminRepo;
 import com.wgs.demo.repo.CustRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
 import com.wgs.demo.repo.PassbookRepo;
 
 @Controller
 public class CustomerController {
-	@Autowired
-	AdminRegRepo regRepo;
 	@Autowired
 	CustRepo custRepo;
 	@Autowired

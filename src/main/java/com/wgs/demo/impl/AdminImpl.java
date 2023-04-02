@@ -5,14 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.wgs.demo.classes.AdminReg;
-import com.wgs.demo.repo.AdminRegRepo;
+import com.wgs.demo.classes.Admin;
+import com.wgs.demo.repo.AdminRepo;
 import com.wgs.demo.repo.AdminUpdateRepo;
 
 @Component
 public class AdminImpl {
 	@Autowired
-	AdminRegRepo adminRepo;
+	AdminRepo adminRepo;
 	@Autowired
 	AdminUpdateRepo adminUpdateRepo;
 
@@ -55,14 +55,14 @@ public class AdminImpl {
 		}
 	}
 
-	public List<AdminReg> findByuId(String userId) {
-		List<AdminReg> list = adminRepo.findByUserId(userId);
+	public List<Admin> findByuId(String userId) {
+		List<Admin> list = adminRepo.findByUserId(userId);
 		return list;
 	}
 
 	public boolean adminAuthintication(String uid, String pass) {
-		List<AdminReg> list = adminRepo.findByUserIdAndPass(uid, pass);
-		for (AdminReg reg : list) {
+		List<Admin> list = adminRepo.findByUserIdAndPass(uid, pass);
+		for (Admin reg : list) {
 			if (reg.getUserId().equals(uid) && reg.getPass().equals(pass)) {
 				return true;
 			} else
@@ -71,13 +71,13 @@ public class AdminImpl {
 		return false;
 	}
 
-	public List<AdminReg> findMobileAndName(String mobile, String name) {
-		List<AdminReg> list = adminRepo.findByMobileAndName(mobile, name);
+	public List<Admin> findMobileAndName(String mobile, String name) {
+		List<Admin> list = adminRepo.findByMobileAndName(mobile, name);
 		return list;
 	}
 
-	public List<AdminReg> findUidAndMobile(String uid, String mobile) {
-		List<AdminReg> list = adminRepo.findByUserIdAndMobile(uid, mobile);
+	public List<Admin> findUidAndMobile(String uid, String mobile) {
+		List<Admin> list = adminRepo.findByUserIdAndMobile(uid, mobile);
 		return list;
 	}
 

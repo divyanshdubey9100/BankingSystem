@@ -12,17 +12,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.wgs.demo.classes.AdminReg;
-import com.wgs.demo.classes.AdminRegReq;
+import com.wgs.demo.classes.Admin;
 import com.wgs.demo.classes.AdminUpdateReq;
 import com.wgs.demo.classes.Customer;
 import com.wgs.demo.classes.Passbook;
+import com.wgs.demo.classes.RequestAdmin;
 import com.wgs.demo.impl.AdminImpl;
 import com.wgs.demo.impl.CustReqImpl;
 import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.impl.OwnerImpl;
-import com.wgs.demo.repo.AdminRegRepo;
-import com.wgs.demo.repo.AdminRegReqRepo;
+import com.wgs.demo.repo.AdminRepo;
+import com.wgs.demo.repo.AdminRequestRepo;
 import com.wgs.demo.repo.AdminUpdateRepo;
 import com.wgs.demo.repo.CustRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
@@ -31,9 +31,9 @@ import com.wgs.demo.repo.PassbookRepo;
 @Controller
 public class AdminController {
 	@Autowired
-	AdminRegRepo adminRepo;
+	AdminRepo adminRepo;
 	@Autowired
-	AdminRegReqRepo adminReqRepo;
+	AdminRequestRepo adminReqRepo;
 	@Autowired
 	CustRepo custRepo;
 	@Autowired
@@ -47,7 +47,7 @@ public class AdminController {
 	@Autowired
 	CustRegReqRepo custRegReqRepo;
 	@Autowired
-	AdminRegReqRepo reqRepo;
+	AdminRequestRepo reqRepo;
 	@Autowired
 	OwnerImpl ownerImpl;
 	@Autowired
@@ -77,11 +77,11 @@ public class AdminController {
 	}
 
 	@RequestMapping("adminAuth")
-	private String adminAuth(@RequestParam String userId, @RequestParam String pass, Model model, AdminReg reg,
+	private String adminAuth(@RequestParam String userId, @RequestParam String pass, Model model, Admin admin,
 			HttpSession session) {
 		if (adminImpl.adminAuthintication(userId, pass) == true) {
-			List<AdminReg> list = adminImpl.findByuId(userId);
-			for (AdminReg regList : list) {
+			List<Admin> list = adminImpl.findByuId(userId);
+			for (Admin regList : list) {
 				session.setAttribute("name", regList.getName());
 				session.setAttribute("id", regList.getId());
 			}
@@ -101,14 +101,14 @@ public class AdminController {
 	}
 
 	@RequestMapping("createAdminAcc")
-	private String createAdminAcc(AdminReg admin, Model model, HttpSession session) {
+	private String createAdminAcc(Admin admin, Model model, HttpSession session) {
 		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
 				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (adminImpl.isUserIdExists(admin.getUserId()) == false
 				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
-			AdminReg adList = adminRepo.save(admin);
+			Admin adList = adminRepo.save(admin);
 			String mes = adList + " created Successfully!";
 			model.addAttribute("cust", mes);
 		} else if (adminImpl.isUserIdExists(admin.getUserId()) == true) {
@@ -131,7 +131,7 @@ public class AdminController {
 	}
 
 	@RequestMapping("viewAdmin")
-	private String viewAdminDetails(Model model, HttpSession session, AdminReg admin) {
+	private String viewAdminDetails(Model model, HttpSession session, Admin admin) {
 		if (session.getAttribute("name") == null || adminImpl.isIdExists((int) session.getAttribute("id")) == false) {
 			return "redirect:/adminLogin";
 		}
@@ -159,7 +159,7 @@ public class AdminController {
 			return "redirect:/adminLogin";
 		}
 		if (adminImpl.getTokenId() != 0) {
-			List<AdminReg> adList = adminRepo.findAll();
+			List<Admin> adList = adminRepo.findAll();
 			model.addAttribute("cust", adList);
 			return "Admin/adminList";
 		} else {
@@ -187,7 +187,7 @@ public class AdminController {
 		if (session.getAttribute("name") == null || adminImpl.isIdExists((int) session.getAttribute("id")) == false) {
 			return "redirect:/adminLogin";
 		}
-		List<AdminReg> acList = adminRepo.findById(id);
+		List<Admin> acList = adminRepo.findById(id);
 		model.addAttribute("cust", acList);
 		return "Admin/editAdminDetails";
 	}
@@ -238,9 +238,9 @@ public class AdminController {
 
 	@RequestMapping("resetUid")
 	private String forgetUserId(@RequestParam String mobile, String name, Model model) {
-		List<AdminReg> list = adminImpl.findMobileAndName(mobile, name);
+		List<Admin> list = adminImpl.findMobileAndName(mobile, name);
 		if (list.size() != 0) {
-			for (AdminReg reg : list) {
+			for (Admin reg : list) {
 				model.addAttribute("cust", reg.getUserId());
 			}
 		} else {
@@ -252,7 +252,7 @@ public class AdminController {
 
 	@RequestMapping("resetPass")
 	private String forgetPwd(@RequestParam String mobile, String userId, Model model) {
-		List<AdminReg> list = adminImpl.findUidAndMobile(userId, mobile);
+		List<Admin> list = adminImpl.findUidAndMobile(userId, mobile);
 		if (list.size() != 0) {
 			model.addAttribute("cust", list);
 			return "Admin/resetPass";
@@ -264,7 +264,7 @@ public class AdminController {
 	}
 
 	@RequestMapping("updatePass")
-	private String updatePass(Model model, AdminReg admin) {
+	private String updatePass(Model model, Admin admin) {
 		adminRepo.saveAndFlush(admin);
 		model.addAttribute("cust", admin.getPass());
 		return "Admin/customerAccountDetails";
@@ -594,10 +594,10 @@ public class AdminController {
 	}
 
 	@RequestMapping("createAdminAccReq")
-	private String reqAdminAcc(AdminRegReq adminReq, Model model) {
+	private String reqAdminAcc(RequestAdmin adminReq, Model model) {
 		if (adminImpl.isUserIdExists(adminReq.getUserId()) == false
 				&& adminImpl.isMobileExists(adminReq.getMobile()) == false) {
-			AdminRegReq adReq = adminReqRepo.save(adminReq);
+			RequestAdmin adReq = adminReqRepo.save(adminReq);
 			String mes = adReq + "Request Submitted Successfully..";
 			model.addAttribute("cust", mes);
 		} else if (adminImpl.isUserIdExists(adminReq.getUserId()) == true) {

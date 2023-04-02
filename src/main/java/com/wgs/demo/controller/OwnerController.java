@@ -12,7 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.wgs.demo.classes.AdminReg;
+import com.wgs.demo.classes.Admin;
 import com.wgs.demo.classes.Customer;
 import com.wgs.demo.classes.Owner;
 import com.wgs.demo.classes.Passbook;
@@ -21,8 +21,8 @@ import com.wgs.demo.impl.AdminReqImpl;
 import com.wgs.demo.impl.CustReqImpl;
 import com.wgs.demo.impl.MethodImpl;
 import com.wgs.demo.impl.OwnerImpl;
-import com.wgs.demo.repo.AdminRegRepo;
-import com.wgs.demo.repo.AdminRegReqRepo;
+import com.wgs.demo.repo.AdminRepo;
+import com.wgs.demo.repo.AdminRequestRepo;
 import com.wgs.demo.repo.AdminUpdateRepo;
 import com.wgs.demo.repo.CustRegReqRepo;
 import com.wgs.demo.repo.CustRepo;
@@ -44,13 +44,13 @@ public class OwnerController {
 	@Autowired
 	PassbookRepo pbookRepo;
 	@Autowired
-	AdminRegRepo adminRepo;
+	AdminRepo adminRepo;
 	@Autowired
 	OwnerRepo ownerRepo;
 	@Autowired
 	AdminReqImpl reqImpl;
 	@Autowired
-	AdminRegReqRepo reqRepo;
+	AdminRequestRepo reqRepo;
 	@Autowired
 	CustRegReqRepo custRegReqRepo;
 	@Autowired
@@ -573,7 +573,7 @@ public class OwnerController {
 			return "redirect:/ownLogin";
 		}
 		if (adminImpl.getTokenId() != 0) {
-			List<AdminReg> adList = adminRepo.findAll();
+			List<Admin> adList = adminRepo.findAll();
 			model.addAttribute("cust", adList);
 			return "Owner/adminList";
 		} else {
@@ -603,13 +603,13 @@ public class OwnerController {
 				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
-		List<AdminReg> acList = adminRepo.findById(id);
+		List<Admin> acList = adminRepo.findById(id);
 		model.addAttribute("cust", acList);
 		return "Owner/editAdminDetails";
 	}
 
 	@RequestMapping("editAdminDetailByOwn")
-	private String editAdminDetailByOwn(AdminReg admin, Model model, HttpSession session) {
+	private String editAdminDetailByOwn(Admin admin, Model model, HttpSession session) {
 		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
 				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
@@ -703,7 +703,7 @@ public class OwnerController {
 	}
 
 	@RequestMapping("cnfrmAdminUpdateReq")
-	private String confirmUpdateReq(AdminReg admin, Model model, HttpSession session) {
+	private String confirmUpdateReq(Admin admin, Model model, HttpSession session) {
 		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
 				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
@@ -713,14 +713,14 @@ public class OwnerController {
 	}
 
 	@RequestMapping("acceptAdminUpdateReq")
-	private String acceptUpdateReq(AdminReg admin, Model model, HttpSession session) {
+	private String acceptUpdateReq(Admin admin, Model model, HttpSession session) {
 		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
 				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (adminImpl.isUserIdExists(admin.getUserId()) == false
 				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
-			AdminReg adList = adminRepo.saveAndFlush(admin);
+			Admin adList = adminRepo.saveAndFlush(admin);
 			adminRepo.flush();
 			adminUpdateRepo.deleteById(admin.getId());
 			adminUpdateRepo.flush();
@@ -728,7 +728,7 @@ public class OwnerController {
 			model.addAttribute("cust", mes);
 		} else if (adminImpl.isUserIdExists(admin.getUserId()) == true
 				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
-			AdminReg adList = adminRepo.saveAndFlush(admin);
+			Admin adList = adminRepo.saveAndFlush(admin);
 			adminRepo.flush();
 			adminUpdateRepo.deleteById(admin.getId());
 			adminUpdateRepo.flush();
@@ -757,7 +757,7 @@ public class OwnerController {
 	}
 
 	@RequestMapping("cnfrmAdminReq")
-	private String confirmReq(AdminReg admin, Model model, HttpSession session) {
+	private String confirmReq(Admin admin, Model model, HttpSession session) {
 		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
 				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
@@ -771,14 +771,14 @@ public class OwnerController {
 	}
 
 	@RequestMapping("acceptAdminReq")
-	private String acceptReq(AdminReg admin, Model model, HttpSession session) {
+	private String acceptReq(Admin admin, Model model, HttpSession session) {
 		if (session.getAttribute("ownName") == null || session.getAttribute("ownId") == null
 				|| session.getAttribute("ownUserId") == null) {
 			return "redirect:/ownLogin";
 		}
 		if (adminImpl.isUserIdExists(admin.getUserId()) == false
 				&& adminImpl.isMobileExists(admin.getMobile()) == false) {
-			AdminReg adList = adminRepo.save(admin);
+			Admin adList = adminRepo.save(admin);
 			adminRepo.flush();
 			String mes = adList + " created Successfully!";
 			model.addAttribute("cust", mes);

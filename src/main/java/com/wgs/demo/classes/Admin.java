@@ -9,10 +9,10 @@ import javax.persistence.UniqueConstraint;
 import org.springframework.stereotype.Component;
 
 
-@Table(name = "admin_reg", uniqueConstraints = @UniqueConstraint(columnNames = { "userId", "mobile" }))
+@Table(name = "admin", uniqueConstraints = @UniqueConstraint(columnNames = { "userId", "mobile" }))
 @Entity
 @Component
-public class AdminReg {
+public class Admin {
 	@Id
 	@GeneratedValue
 	private int id;
@@ -23,12 +23,12 @@ public class AdminReg {
 	private String gender;
 	private String address;
 
-	public AdminReg() {
+	public Admin() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public AdminReg(int id, String userId, String name, String mobile, String pass, String gender, String address) {
+	public Admin(int id, String userId, String name, String mobile, String pass, String gender, String address) {
 		super();
 		this.id = id;
 		this.userId = userId;

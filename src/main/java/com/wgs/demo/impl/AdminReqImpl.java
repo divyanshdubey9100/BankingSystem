@@ -5,16 +5,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.wgs.demo.classes.AdminRegReq;
-import com.wgs.demo.repo.AdminRegReqRepo;
+import com.wgs.demo.classes.RequestAdmin;
+import com.wgs.demo.repo.AdminRequestRepo;
 import com.wgs.demo.repo.AdminUpdateRepo;
 
 @Component
 public class AdminReqImpl {
 	@Autowired
-	AdminRegReqRepo adminRepo;
+	AdminRequestRepo adminRepo;
 	@Autowired
-	AdminRegReq regReq;
+	RequestAdmin regReq;
 	@Autowired
 	AdminUpdateRepo adminUpdateRepo;
 
@@ -40,7 +40,7 @@ public class AdminReqImpl {
 		}
 	}
 	
-	public List<AdminRegReq> findAllReq(){
+	public List<RequestAdmin> findAllReq(){
 		return adminRepo.findAll();
 	}
 
